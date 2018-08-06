@@ -41,8 +41,8 @@ phone.
 
 Log into build.phonegap.com with these credentials:
 
-    matt@216software.com
-    @d0b3Sucks
+    ask Matt for these -- since this is an open-source repo, I shouldn't
+    put them in here.
 
 And then on the "Apps" tab, look for StuhlGang.  Click on the StuhlGang
 text.
