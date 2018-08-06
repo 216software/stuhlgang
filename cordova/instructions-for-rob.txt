@@ -44,5 +44,24 @@ Log into build.phonegap.com with these credentials:
     matt@216software.com
     @d0b3Sucks
 
+And then on the "Apps" tab, look for StuhlGang.  Click on the StuhlGang
+text.
+
+Then you gotta make sure you have already pushed all the code up to the
+github repo, because that's where build.phonegap pulls from.
+
+Then after you pushed it up, click "Update Code" and then after that,
+"Rebuild All".
+
+HURRAY!!!
+
+Right now, the android app will build A-OK.
+
+If you download the apk file on your phone and then open it, you'll get
+prompted to install the app.
+
+The iOS version needs me to do some tedious crap involving uploading a
+dev key, which I can do, but I don't really want to do right now, but I
+will do it.
 
 .. vim: set syntax=rst:
