@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+# TODO: instead of hardcoding the app ID in here, the cool way to do
+# this would be to check the environment for an app ID, and if I don't
+# find it, then throw a tantrum.
+
+# For that matter, I should do that as well with the password.
+
+/usr/bin/curl --silent --user matt@216software.com:@d0b3Sucks \
+-X PUT -d 'data={"pull":"true"}' \
+https://build.phonegap.com/api/v1/apps/3260494

@@ -1,0 +1,40 @@
+#! /bin/bash -e
+
+
+# There is a bug whree if you don't have the local git repo in-sync with
+# github, the git show command will glitch out.
+
+# I don't know how to fix that right yet.
+
+SHA=`/usr/bin/git ls-remote github master | /usr/bin/cut -f 1`
+NOTES=`/usr/bin/git show -s --format='%B' $SHA`
+
+# first arg should be the commit hash of these builds.
+# second arg should be some release notes.
+
+echo "Uploading android build..."
+
+/usr/bin/curl \
+-F "status=2" \
+-F "notify=0" \
+-F "notes=$NOTES" \
+-F "commit_sha=$SHA" \
+-F "notes_type=0" \
+-F "ipa=@/tmp/circuitcaddie.apk" \
+-H "X-HockeyAppToken: 7b3b8ba4fe614ccaabe5ea1a3eacb827" \
+https://rink.hockeyapp.net/api/2/apps/upload
+
+echo "Uploading ios build..."
+
+/usr/bin/curl \
+-F "status=2" \
+-F "notify=0" \
+-F "notes=$NOTES" \
+-F "commit_sha=$SHA" \
+-F "notes_type=0" \
+-F "ipa=@/tmp/circuitcaddie.ipa" \
+-H "X-HockeyAppToken: 7b3b8ba4fe614ccaabe5ea1a3eacb827" \
+https://rink.hockeyapp.net/api/2/apps/upload
+
+# I looked up my (matt) user ID, and it looks like 392185.
+# -F "users=392185" \

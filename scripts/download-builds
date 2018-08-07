@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+/bin/rm -f /tmp/stuhlgang.apk
+
+/usr/bin/curl --silent --location --user matt@216software.com:@d0b3Sucks \
+https://build.phonegap.com/api/v1/apps/3260494/android \
+> /tmp/stuhlgang.apk
+
+/bin/ls -hl /tmp/stuhlgang.apk
+
+/bin/rm -f /tmp/stuhlgang.ipa
+
+/usr/bin/curl --silent --location --user matt@216software.com:@d0b3Sucks \
+https://build.phonegap.com/api/v1/apps/3260494/ios \
+> /tmp/stuhlgang.ipa
+
+/bin/ls -hl /tmp/stuhlgang.ipa

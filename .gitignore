@@ -1,3 +1,4 @@
 /cordova/platforms
 /cordova/plugins
 /cordova/node_modules
+/cordova/yarn-error.log
