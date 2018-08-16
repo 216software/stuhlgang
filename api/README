@@ -1,0 +1,40 @@
+++++++++
+stuhlgang
+++++++++
+
+Read INSTALL for installation instructions.
+
+StuhGang should be renamed to whatever you want
+your project name to be.
+
+Two steps:
+
+1. Rename all files and folders from stuhlgang to your project's name::
+
+    # The shopt globstar let's us do recursive using **
+    # if we have bash 4.0 or >
+
+    shopt -s globstar
+    rename -n 's/stuhlgang/new_project_name/' **
+
+2. Rewrite the contents of each file, substituting stuhlgang for your
+   project's name::
+
+    find profiles -type f -exec sed -i 's/stuhlgang/new_project_name/g' {} \;
+
+Now you should be ready to follow the rest of the INSTALL instructions.
+
+Just remember, to substitute 'stuhlgang' for your project's name.
+
+
+Code outline
+============
+
+webapp/ holds the code that handles web requests.
+
+pg/ holds the code related to talking to postgresql.
+
+scripts/ holds a bunch of command-line scripts.
+
+
+.. vim: set syntax=rst:

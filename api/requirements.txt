@@ -1,0 +1,9 @@
+Jinja2
+PyYAML
+Werkzeug
+decorator
+gunicorn
+horsemeat
+ipython
+psycopg2
+colorlog

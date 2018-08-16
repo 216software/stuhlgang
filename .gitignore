@@ -2,3 +2,5 @@
 /cordova/plugins
 /cordova/node_modules
 /cordova/yarn-error.log
+/api/stuhlgang/yamlfiles/matt.yaml
+/api/stuhlgang/yamlfiles/xps.yaml
