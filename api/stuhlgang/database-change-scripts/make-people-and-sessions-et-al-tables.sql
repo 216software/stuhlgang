@@ -2,8 +2,8 @@ create table person_statuses
 (
     title citext primary key,
     description text,
-    inserted timestamp not null default now(),
-    updated timestamp
+    inserted timestamptz not null default now(),
+    updated timestamptz
 );
 
 create trigger person_statuses_set_updated_column
@@ -16,7 +16,6 @@ insert into person_statuses
 (title)
 values
 ('started registration'),
-('needs to pick password'),
 ('confirmed'),
 ('deactivated'),
 ('canceled registration');
@@ -40,8 +39,8 @@ create table people
     -- super users are different than just local project administrators.
     is_superuser boolean not null default false,
 
-    inserted timestamp not null default now(),
-    updated timestamp
+    inserted timestamptz not null default now(),
+    updated timestamptz
 
 );
 
@@ -56,7 +55,7 @@ execute procedure set_updated_column();
 create table webapp_sessions
 (
     session_uuid uuid primary key default uuid_generate_v4(),
-    expires timestamp not null default now() + interval '60 minutes',
+    expires timestamptz not null default now() + interval '60 minutes',
 
     person_uuid uuid
     references people (person_uuid)
@@ -66,8 +65,8 @@ create table webapp_sessions
     news_message text,
     redirect_to_url text,
 
-    inserted timestamp not null default now(),
-    updated timestamp
+    inserted timestamptz not null default now(),
+    updated timestamptz
 );
 
 create trigger webapp_sessions_set_updated_column
@@ -96,8 +95,8 @@ create table webapp_session_data
 
     primary key (session_uuid, namespace),
     session_data hstore,
-    inserted timestamp not null default now(),
-    updated timestamp
+    inserted timestamptz not null default now(),
+    updated timestamptz
 );
 
 create trigger webapp_session_data_set_updated_column
@@ -110,8 +109,8 @@ create table message_types
 (
     title citext primary key,
     description text,
-    inserted timestamp not null default now(),
-    updated timestamp
+    inserted timestamptz not null default now(),
+    updated timestamptz
 );
 
 create trigger message_types_set_updated_column
@@ -137,7 +136,7 @@ create table email_message_queue
     -- the redeemed columns tracks if this message has already been
     -- redeemed.  if "redeemed" sounds goofy, think of it as when the
     -- user used this message to do something.
-    redeemed timestamp,
+    redeemed timestamptz,
 
     recipient_email_address email_address_type
     not null references people (email_address)
@@ -148,17 +147,17 @@ create table email_message_queue
     on delete cascade
     on update cascade,
 
-    selected_for_delivery timestamp,
+    selected_for_delivery timestamptz,
 
     -- Right now, python passes in these values.  I bet there's some
     -- cool way to grab these out of some environmental variables.
     selector_pid int,
     selector_host text,
 
-    sent timestamp,
+    sent timestamptz,
 
-    inserted timestamp not null default now(),
-    updated timestamp
+    inserted timestamptz not null default now(),
+    updated timestamptz
 );
 
 -- I just learned about this "comment" feature.
@@ -167,10 +166,10 @@ create table email_message_queue
 -- It seems like a good way to help explain stuff.
 comment on column email_message_queue.sent is
 E'A NULL value means that the message has not been sent yet, while a
-timestamp value shows the moment when it was sent.';
+timestamptz value shows the moment when it was sent.';
 
 comment on column email_message_queue.selected_for_delivery is
-E'A NULL value means no script is processing this row.  A timestamp
+E'A NULL value means no script is processing this row.  A timestamptz
 is the date when the script began processing this row.  Also look at
 selector_pid and selector_host for more information';
 
