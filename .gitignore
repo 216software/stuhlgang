@@ -2,3 +2,6 @@
 /app/plugins
 /app/node_modules
 /app/yarn-error.log
+/api/stuhlgang/yamlfiles/matt.yaml
+/api/stuhlgang/yamlfiles/xps.yaml
+/api/stuhlgang/yamlfiles/stuhlgang-dev.yaml

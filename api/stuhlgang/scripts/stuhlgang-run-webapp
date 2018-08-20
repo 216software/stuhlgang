@@ -1,0 +1,28 @@
+#! /bin/bash -e
+
+# If you get an error like "stuhlgang-config not found", then you either
+# need to install stuhlgang globally, or activate the virtualenv where you
+# installed stuhlgang.
+#
+# If you're running this from supervisord, just set the env PATH to
+# point to your .virtualenvs/blargh/bin folder.
+
+if (( $# != 1 ))
+then
+
+    echo "usage: $0 yaml_file"
+    exit 99;
+
+else
+
+    PORT=`$VIRTUAL_ENV/bin/stuhlgang-config $1 webapp_port`
+    PIDFILE=`$VIRTUAL_ENV/bin/stuhlgang-config $1 pidfile`
+    NUM_WEBAPP_WORKERS=`$VIRTUAL_ENV/bin/stuhlgang-config $1 num_webapp_workers`
+
+    exec $VIRTUAL_ENV/bin/gunicorn \
+    --workers $NUM_WEBAPP_WORKERS \
+    --bind 127.0.0.1:$PORT \
+    --pid $PIDFILE \
+    stuhlgang.configwrapper:ConfigWrapper.load_yaml\(\"$1\"\).build_webapp\(\)
+
+fi
