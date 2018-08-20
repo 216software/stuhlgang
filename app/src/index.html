@@ -37,23 +37,31 @@
     <body>
         <div class="app">
             <topbar></topbar>
-            <div class="container" style="margin-top: 56px">
+            <div class="container">
+
                 <div data-bind="
                     page: {
                         id: 'start',
+                        role: 'start',
                         title: 'Stuhlgang: Home',
-                        source: 'templates/home.html',
+                        source: 'templates/home.html'
                     }"
                 ></div>
+
+                <p>This is just a boring paragraph in between the divs.</p>
+
                 <div data-bind="
                     page: {
                         id: 'page1',
                         title: 'Stuhlgang: Page 1',
-                        source: 'templates/page1.html',
+                        source: 'templates/page1.html'
                     }"
                 ></div>
-            </div>
-        </div>
+
+                <p>This is just a boring paragraph.</p>
+
+            </div><!-- closes container -->
+        </div><!-- closes class=app -->
         <script type="text/javascript" src="cordova.js"></script>
     </body>
 </html>
