@@ -3,6 +3,7 @@ import './components';
 
 class App {
   constructor () {
+    console.debug("Inside constructor for App...");
     this.homeViewModel = new Home();
   }
 }

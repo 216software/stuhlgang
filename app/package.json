@@ -29,7 +29,7 @@
     "jquery": "^3.3.1",
     "knockout": "^3.4.2",
     "npm": "^2.15.12",
-    "pagerjs": "^1.1.0",
+    "pagerjs": "git+https://github.com/finnsson/pagerjs.git#1.0.1",
     "plist": "^1.2.0",
     "popper.js": "^1.14.4",
     "q": "^1.5.1",

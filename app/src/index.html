@@ -35,30 +35,37 @@
         <title>Hello World</title>
     </head>
     <body>
-        <div class="app">
-            <topbar></topbar>
+
+<div class="app">
+<topbar></topbar>
 
 <div class="container">
 
 <div data-bind="
     page: {
-        id: 'start',
+        id: 'evan',
         role: 'start',
         title: 'Stuhlgang: Home',
-        source: 'templates/home.html'
-    }"></div>
+        source: 'templates/home.html',
+        afterShow: homeViewModel.initialize_home
+    }">
+</div>
 
-<p>This is just a boring paragraph in between the divs.</p>
-
-<div data-bind="
-    page: {
+<div data-bind="page: {
         id: 'page1',
         title: 'Stuhlgang: Page 1',
-        source: 'templates/page1.html'
+        source: 'templates/page1.html',
+        afterShow: homeViewModel.initialize_page_1
     }"
 ></div>
 
+<div data-bind="page: {
+    source: 'templates/matt.html',
+    id: 'matt'}">MATT PAGE INSIDE DIV</div>
+
 <p>This is just a boring paragraph.</p>
+
+</p>
 
 </div><!-- closes container -->
 </div><!-- closes class=app -->
