@@ -1,4 +1,4 @@
-/cordova/platforms
-/cordova/plugins
-/cordova/node_modules
-/cordova/yarn-error.log
+/app/platforms
+/app/plugins
+/app/node_modules
+/app/yarn-error.log
