@@ -28,7 +28,7 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: ws: 'unsafe-inline' https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
@@ -37,14 +37,13 @@
     <body>
         <div class="app">
             <topbar></topbar>
-            <div class="container">
+            <div class="container" style="margin-top: 56px">
                 <div data-bind="
                     page: {
                         id: 'start',
                         title: 'Stuhlgang: Home',
                         source: 'templates/home.html',
                     }"
-                    style="display: none;"
                 ></div>
                 <div data-bind="
                     page: {
@@ -52,7 +51,6 @@
                         title: 'Stuhlgang: Page 1',
                         source: 'templates/page1.html',
                     }"
-                    style="display: none;"
                 ></div>
             </div>
         </div>
