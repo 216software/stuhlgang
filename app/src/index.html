@@ -37,25 +37,33 @@
     <body>
         <div class="app">
             <topbar></topbar>
-            <div class="container">
-                <div data-bind="
-                    page: {
-                        id: 'start',
-                        title: 'Stuhlgang: Home',
-                        source: 'templates/home.html',
-                    }"
-                    style="display: none;"
-                ></div>
-                <div data-bind="
-                    page: {
-                        id: 'page1',
-                        title: 'Stuhlgang: Page 1',
-                        source: 'templates/page1.html',
-                    }"
-                    style="display: none;"
-                ></div>
-            </div>
-        </div>
+
+<div class="container">
+
+<div data-bind="
+    page: {
+        id: 'start',
+        role: 'start',
+        title: 'Stuhlgang: Home',
+        source: 'templates/home.html'
+    }"></div>
+
+<p>This is just a boring paragraph in between the divs.</p>
+
+<div data-bind="
+    page: {
+        id: 'page1',
+        title: 'Stuhlgang: Page 1',
+        source: 'templates/page1.html'
+    }"
+></div>
+
+<p>This is just a boring paragraph.</p>
+
+</div><!-- closes container -->
+</div><!-- closes class=app -->
+
         <script type="text/javascript" src="cordova.js"></script>
+
     </body>
 </html>
