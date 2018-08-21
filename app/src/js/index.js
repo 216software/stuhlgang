@@ -39,14 +39,8 @@ const app = {
   // Update DOM on a Received Event
   receivedEvent () {
     const appViewModel = new App();
-    window.appViewModel = appViewModel;
     pager.extendWithPage(appViewModel);
-    console.debug(appViewModel.homeViewModel.type);
-
-    // ko.applyBindings(appViewModel, document.getElementById('app'));
-
     ko.applyBindings(appViewModel);
-
     pager.start();
   },
 };

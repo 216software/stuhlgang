@@ -1,18 +1,16 @@
 class Home {
   constructor () {
     this.title = 'Home Page';
-    this.type = "Homer";
+    this.type = 'Homer';
   }
 
-
-  initialize_page_1 () {
-    console.debug("In initialize_page_1...");
+  initializePage1 = () => {
+    console.debug('In initialize_page_1...', this.title);
   }
 
-  initialize_home () {
-    console.debug("In initialize_home...");
+  initializeHome = () => {
+    console.debug('In initialize_home...', this.type);
   }
-
 }
 
 export default Home;

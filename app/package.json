@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack",
+    "watch": "webpack --watch",
     "emulate-browser": "cordova emulate browser -- --live-reload",
     "emulate-android": "cordova emulate android -- --live-reload",
     "emulate-ios": "cordova emulate ios -- --live-reload",
@@ -54,6 +55,7 @@
     "@babel/preset-env": "^7.0.0-rc.1",
     "autoprefixer": "^9.1.2",
     "babel-eslint": "^8.2.6",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^1.0.0",
