@@ -37,36 +37,38 @@
     <body>
         <div class="app">
             <topbar></topbar>
-            <div class="container">
+            <div class="container" style="margin-top: 56px;">
 
-<div data-bind="
-    page: {
-        id: 'evan',
-        role: 'start',
-        title: 'Stuhlgang: Home',
-        source: 'templates/home.html',
-        afterShow: homeViewModel.initialize_home
-    }">
-</div>
+                <div data-bind="
+                    page: {
+                        id: 'evan',
+                        role: 'start',
+                        title: 'Stuhlgang: Home',
+                        source: 'templates/home.html',
+                        afterShow: homeViewModel.initialize_home
+                    }"
+                ></div>
 
-<div data-bind="page: {
-        id: 'page1',
-        title: 'Stuhlgang: Page 1',
-        source: 'templates/page1.html',
-        afterShow: homeViewModel.initialize_page_1
-    }"
-></div>
+                <div data-bind="
+                    page: {
+                        id: 'page1',
+                        title: 'Stuhlgang: Page 1',
+                        source: 'templates/page1.html',
+                        afterShow: homeViewModel.initialize_page_1
+                    }"
+                ></div>
 
-<div data-bind="page: {
-    source: 'templates/matt.html',
-    id: 'matt'}">MATT PAGE INSIDE DIV</div>
+                <div data-bind="
+                    page: {
+                        source: 'templates/matt.html',
+                        id: 'matt'
+                    }"
+                >MATT PAGE INSIDE DIV</div>
 
-<p>This is just a boring paragraph.</p>
+                <p>This is just a boring paragraph.</p>
 
-</p>
-
-</div><!-- closes container -->
-</div><!-- closes class=app -->
+            </div><!-- closes container -->
+        </div><!-- closes class=app -->
 
         <script type="text/javascript" src="cordova.js"></script>
     </body>
