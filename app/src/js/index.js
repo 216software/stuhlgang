@@ -4,8 +4,6 @@ import ko from 'knockout';
 import App from './App';
 import '../sass/main.scss';
 
-console.log(API_URL);
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
