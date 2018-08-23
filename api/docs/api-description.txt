@@ -10,7 +10,7 @@ Verify a session
 
 ::
 
-    $ curl http://stuhlgang.xps/api/verify-session-uuid?session_uuid=8b78a20a-7766-42e1-908b-8d436dc07fcb
+    $ curl https://stuhlgang-dev.216software.com/api/verify-session-uuid?session_uuid=8b78a20a-7766-42e1-908b-8d436dc07fcb
     {
             "message": "Could not verify session",
             "reply_timestamp": "2018-08-23T13:25:48.191812",
@@ -22,7 +22,7 @@ Start a session
 
 ::
 
-	$ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"evanmicahstern@gmail.com", "password":"abc123"}' http://stuhlgang.xps/api/start-session
+	$ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"evanmicahstern@gmail.com", "password":"abc123"}' https://stuhlgang-dev.216software.com/api/start-session
 	{
 		"message": "Session created and will expire on 2018-08-23 14:36:18.408752-04:00",
 		"person": {
@@ -47,14 +47,14 @@ Start a session
 See that session->session_uuid?  You'll need that.  Verify it for fun::
 
 
-    $ curl http://stuhlgang.xps/api/verify-session-uuid?session_uuid=25a8babc-8db1-45f9-a732-aed57b3cfd00
+    $ curl https://stuhlgang-dev.216software.com/api/verify-session-uuid?session_uuid=25a8babc-8db1-45f9-a732-aed57b3cfd00
 
 End a session
 -------------
 
 ::
 
-	$ curl -H 'Content-Type: application/json' -X POST -d '{"session_uuid":"25a8babc-8db1-45f9-a732-aed57b3cfd00"}' http://stuhlgang.xps/api/end-session
+	$ curl -H 'Content-Type: application/json' -X POST -d '{"session_uuid":"25a8babc-8db1-45f9-a732-aed57b3cfd00"}' https://stuhlgang-dev.216software.com/api/end-session
 	{
 		"message": "Ended session 25a8babc-8db1-45f9-a732-aed57b3cfd00.",
 		"reply_timestamp": "2018-08-23T13:42:57.261716",
@@ -72,7 +72,7 @@ End a session
 	}
 
 
-	$ curl http://stuhlgang.xps/api/verify-session-uuid?session_uuid=25a8babc-8db1-45f9-a732-aed57b3cfd00
+	$ curl https://stuhlgang-dev.216software.com/api/verify-session-uuid?session_uuid=25a8babc-8db1-45f9-a732-aed57b3cfd00
 	{
 		"message": "Could not verify session",
 		"reply_timestamp": "2018-08-23T13:43:05.470290",
