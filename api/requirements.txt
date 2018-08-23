@@ -7,3 +7,4 @@ horsemeat
 ipython
 psycopg2
 colorlog
+pytz

@@ -26,6 +26,11 @@ class ConfigWrapper(configwrapper.ConfigWrapper):
         psycopg2.extras.register_composite('people', pgconn,
           factory=PersonFactory)
 
+        from stuhlgang.pg.sessions import SessionFactory
+
+        psycopg2.extras.register_composite('webapp_sessions', pgconn,
+          factory=SessionFactory)
+
         log.info('Just registered composite types in psycopg2')
 
         return pgconn

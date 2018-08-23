@@ -10,93 +10,155 @@ import uuid
 import datetime
 
 import psycopg2
+
 from stuhlgang.webapp.framework.handler import Handler
 from stuhlgang.webapp.framework.response import Response
-from stuhlgang.model import message, session, user
-from stuhlgang.model.user import PasswordHistory as password_history
-
-from stuhlgang.model import numberoffailedloginattemps as loginattempt
-from stuhlgang.webapp.auth import scrubbers
+from stuhlgang import pg
 
 log = logging.getLogger(__name__)
 
-"""
+class VerifySessionUUID(Handler):
 
-POST /api/sign-up
-[email_address, display_name, password]
+    route_strings = set(["GET /api/verify-session-uuid"])
+    route = Handler.check_route_strings
 
-POST /api/start-session
-[email_address, password]
+    def handle(self, req):
 
-GET /api/verify-session
+        session_from_qs = None
 
-POST /api/confirm-email
+        if not req.session and "session_uuid" in req.wz_req.args:
 
-POST /api/end-session
+            try:
 
-"""
+                session_uuid = uuid.UUID(req.wz_req.args["session_uuid"])
 
-class StartSignup(Handler):
+            except ValueError as ex:
 
-    route_strings = set ([
-        "POST /api/signup",
-        "POST /api/sign-up",
-    ])
+                return Response.json(dict(
+                    reply_timestamp=datetime.datetime.now(),
+                    success=False,
+                    message="Invalid UUID: {0}!".format(
+                        req.wz_req.args["session_uuid"])))
+
+            else:
+
+                session_from_qs = pg.sessions.Session.verify_session_uuid(
+                    self.cw.get_pgconn(),
+                    session_uuid)
+
+        if session_from_qs or req.session:
+
+            sesh = session_from_qs or req.session
+
+            logged_in_person = pg.people.Person.by_person_uuid(
+                self.cw.get_pgconn(),
+                sesh.person_uuid)
+
+            resp = Response.json(dict(
+                reply_timestamp=datetime.datetime.now(),
+                success=True,
+                message="Verified session is good until {0}.".format(
+                    sesh.expires),
+                session=sesh,
+                logged_in_person=logged_in_person))
+
+            resp.set_session_cookie(
+                sesh.session_uuid,
+                self.cw.app_secret)
+
+            return resp
+
+        else:
+
+            return Response.json(dict(
+                reply_timestamp=datetime.datetime.now(),
+                success=False,
+                message="Could not verify session"))
+
+class Authenticate(Handler):
+
+    route_strings = set([
+        "POST /api/authenticate",
+        "POST /api/log-in",
+        "POST /api/login",
+        "POST /api/start-session"])
 
     route = Handler.check_route_strings
 
-    required_json_keys = ["display_name", "email_address", "password"]
-
-    def email_address_is_new(self, email_address):
-
-        try:
-
-            pg.people.Person.by_email_address(
-                self.cw.get_pgconn(),
-                email_address)
-
-        except KeyError as ex:
-            return True
-
-        else:
-            return False
-
-    @staticmethod
-    def email_is_valid(email_address):
-
-        return bool(re.match(r".+@.+\..+", email_address))
+    required_json_keys = ["email_address", "password"]
 
     @Handler.require_json
     def handle(self, req):
 
-		em = req.json["email_address"]
+        email_address = req.json["email_address"]
+        password = req.json["password"]
 
-		if not self.email_is_valid(em):
+        session = None
 
-			return Response.json(dict(
-				success=False,
-				reply_timestamp=datetime.datetime.now(),
-				message="Sorry, {0} is not a valid email!".format(em)))
+        session = pg.sessions.Session.maybe_start_new_session_after_checking_email_and_password(
+            self.cw.get_pgconn(),
+            email_address.strip(),
+            password)
 
-		elif not self.email_address_is_new(em):
+        if session:
 
-			return Response.json(dict(
-				success=False,
-				reply_timestamp=datetime.datetime.now(),
-				message="Sorry, Somebody else already signed up with "
-					"email {0}!".format(em)))
+            person = pg.people.Person.by_person_uuid(
+                self.cw.get_pgconn(),
+                session.person_uuid)
 
-		inserted_person = pg.people.Person.insert(
-			self.cw.get_pgconn(),
-			req.json["display_name"],
-			em,
-			req.json["password"])
+            log.info("{0} just logged in.".format(person.display_name))
 
-		inserted_person.send_confirmation_code_via_email(
-			self.cw.make_smtp_connection())
+            resp = Response.json(dict(
+                reply_timestamp=datetime.datetime.now(),
+                message="Session created and will expire on {0}".format(
+                    session.expires),
+                success=True,
+                session=session,
+                person=person))
 
-		return Response.json(dict(
-			success=True,
-			reply_timestamp=datetime.datetime.now(),
-			inserted_person=inserted_person,
-			message="Go check your email!"))
+            resp.set_session_cookie(
+                session.session_uuid,
+                self.cw.app_secret)
+
+            return resp
+
+        else:
+
+            return Response.json(dict(
+                message="Sorry, couldn't authenticate!",
+                reply_timestamp=datetime.datetime.now(),
+                success=False))
+
+
+class EndSession(Handler):
+
+    route_strings = set(["POST /api/logout", "POST /api/end-session"])
+    route = Handler.check_route_strings
+
+    required_json_keys = ["session_uuid"]
+
+    @Handler.require_json
+    def handle(self, req):
+
+        try:
+
+            session = pg.sessions.Session.by_session_uuid(
+                self.cw.get_pgconn(),
+                req.json["session_uuid"])
+
+        except KeyError:
+
+            return Response.json(dict(
+                message="Sorry, could not find session {0}!".format(req.json["session_uuid"]),
+                reply_timestamp=datetime.datetime.now(),
+                success=False))
+
+        else:
+
+            updated_session = session.end_session(self.cw.get_pgconn())
+
+            return Response.json(dict(
+                message="Ended session {0}.".format(session.session_uuid),
+                reply_timestamp=datetime.datetime.now(),
+                success=True,
+                session=updated_session))

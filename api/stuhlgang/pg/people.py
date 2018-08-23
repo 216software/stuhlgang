@@ -16,7 +16,7 @@ class PersonFactory(psycopg2.extras.CompositeCaster):
 class Person(object):
 
     def __init__(self, person_uuid, email_address, salted_hashed_password,
-        person_status, display_name, confirm_code, is_superuser, inserted, updated):
+        person_status, display_name, confirmation_code, is_superuser, inserted, updated):
 
         self.person_uuid = person_uuid
         self.email_address = email_address
@@ -24,7 +24,7 @@ class Person(object):
         self.person_status = person_status
         self.display_name = display_name
         self.is_superuser = is_superuser
-        self.confirm_code = confirm_code
+        self.confirmation_code = confirmation_code
         self.inserted = inserted
         self.updated = updated
 
@@ -124,8 +124,8 @@ class Person(object):
 
     def write_confirmation_email(self):
 
-        if not self.confirm_code:
-            raise ValueError("Sorry, I don't have a confirm code!")
+        if not self.confirmation_code:
+            raise ValueError("Sorry, I don't have a confirmation code!")
 
         else:
 
@@ -141,7 +141,7 @@ class Person(object):
 
             html_email = MIMEText(
                 html_tmpl.render(
-                    confirmation_code=self.confirm_code,
+                    confirmation_code=self.confirmation_code,
                     person=self,
                     locale=locale),
                 'html')
