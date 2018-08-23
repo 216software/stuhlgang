@@ -1,18 +1,31 @@
 # vim: set expandtab ts=4 sw=4 filetype=python:
 
+import copy
+import datetime
 import logging
 import textwrap
 
+import psycopg2.extras
+import pytz
+
 log = logging.getLogger(__name__)
 
-class Session(object):
+from stuhlgang.pg import RelationWrapper
 
-    def __init__(self, session_uuid, expires, person_id, news_message,
+class SessionFactory(psycopg2.extras.CompositeCaster):
+
+    def make(self, values):
+        d = dict(zip(self.attnames, values))
+        return Session(**d)
+
+class Session(RelationWrapper):
+
+    def __init__(self, session_uuid, expires, person_uuid, news_message,
         redirect_to_url, inserted, updated):
 
         self.session_uuid = session_uuid
         self.expires = expires
-        self.person_id = person_id
+        self.person_uuid = person_uuid
         self.news_message = news_message
         self.redirect_to_url = redirect_to_url
         self.inserted = inserted
@@ -64,4 +77,65 @@ class Session(object):
 
     @property
     def __jsondata__(self):
-        return self.__dict__
+
+        d = copy.copy(self.__dict__)
+        d["expired"] = self.expired
+        return d
+
+    @property
+    def expired(self):
+        return self.expires <= pytz.UTC.localize(datetime.datetime.utcnow())
+
+    @classmethod
+    def verify_session_uuid(cls, pgconn, session_uuid):
+
+        """
+        Returns the session only if it hasn't expired yet.
+        """
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            select webapp_sessions.*::webapp_sessions as session
+            from webapp_sessions
+            where session_uuid = %(session_uuid)s
+            and expires >= current_timestamp
+            """), locals())
+
+        if cursor.rowcount:
+            return cursor.fetchone().session
+
+    by_valid_session_uuid = verify_session_uuid
+
+    def end_session(self, pgconn):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            update webapp_sessions
+            set expires = current_timestamp
+            where session_uuid = (%(session_uuid)s)
+            returning webapp_sessions.*::webapp_sessions as session
+        """), {'session_uuid': self.session_uuid})
+
+        if cursor.rowcount:
+            return cursor.fetchone().session
+
+    @classmethod
+    def by_session_uuid(cls, pgconn, session_uuid):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            select webapp_sessions.*::webapp_sessions as session
+            from webapp_sessions
+            where session_uuid = %(session_uuid)s
+            """), locals())
+
+        if cursor.rowcount:
+            return cursor.fetchone().session
+
+        else:
+            raise KeyError(
+                "Could not find any session with session UUID {0}.".format(
+                    session_uuid))
