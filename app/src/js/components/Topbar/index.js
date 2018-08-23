@@ -6,12 +6,12 @@ class Topbar {
     this.activeNav = ko.observable('home');
     this.pages = [
       {
-        name: 'home',
-        title: 'Home',
+        id: '',
+        title: 'Home Page',
         url: '/',
       },
       {
-        name: 'page1',
+        id: 'page1',
         title: 'Page1',
         url: '/page1',
       },

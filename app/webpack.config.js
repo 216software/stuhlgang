@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './src/js/index.js',
@@ -29,6 +30,30 @@ module.exports = {
         },
       },
 
+      {
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader' },
+          {
+            loader: 'postcss-loader',
+            options: {
+              // eslint-disable-next-line
+              plugins: function () {
+                return [
+                  // eslint-disable-next-line
+                  require('precss'),
+                  // eslint-disable-next-line
+                  require('autoprefixer'),
+                ];
+              },
+            },
+          },
+          { loader: 'sass-loader' },
+        ],
+      },
+
+      /*
       // sass loader
       {
         test: /\.(scss)$/,
@@ -52,6 +77,7 @@ module.exports = {
           { loader: 'sass-loader' },
         ],
       },
+      */
 
       // html loader
       {
@@ -80,6 +106,11 @@ module.exports = {
     new CleanWebpackPlugin([
       'www/',
     ]),
+
+    new MiniCssExtractPlugin({
+      filename: '[name].[hash].css',
+      chunkFilename: '[id].[hash].css',
+    }),
 
     // copy all the template files so that the app can access them.
     new CopyWebpackPlugin([

@@ -20,15 +20,11 @@
         >
             <li
                 class="nav-item"
-                data-bind="css: { active: $parent.activeNav() === name }"
+                data-bind="css: { active: pager.getActivePage().getCurrentId() === id}"
             >
                 <a
                     class="nav-link"
                     data-bind="
-                        click: function () {
-                            $parent.activeNav(name);
-                            pager.navigate(url);
-                        },
                         page-href: url,
                         text: title"
                 ></a>
