@@ -8,6 +8,7 @@
     "globals": {
         "document": true,
         "cordova": true,
-        "pager": true
+        "pager": true,
+        "NativeStorage": true
     }
 }
