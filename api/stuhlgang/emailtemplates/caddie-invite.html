@@ -1,0 +1,53 @@
+{% extends 'emailtemplates/base.html' %}
+{% block main %}
+
+<p>
+<strong>
+{{ person.display_name }}: Circuit Caddie invite for {{ club.title }}
+</strong>
+</p>
+
+<p style="text-align: center; background-color: black;
+padding-top:20px;padding-bottom:20px;">
+<img
+src="https://cc.circuitapp.com/static/img/dark-bg-circuit-caddie-icon.png"
+/>
+</p>
+
+<p>
+You’ve been invited by {{ club.title }} to receive payments through Circuit
+Caddie.
+
+<p>
+To get started you’ll need to:
+</p>
+
+<ol>
+
+<li>Click the link below to create a Circuit Caddie account</li>
+
+<li>Create a Stripe account or link to an existing Stripe account where
+payments will be deposited.  To create a Stripe account, you’ll need
+your bank account information and social security number.</li>
+
+</ol>
+
+<p>
+When you’re ready, click the link below:
+</p>
+
+<p>
+<a href="{{ cw.web_host }}/#caddie/accept-invite?club_number={{ club.club_number }}&jwt={{ jwt_string }}">{{ cw.web_host
+}}/#caddie/accept-invite?club_number={{ club.club_number}}&jwt={{ jwt_string }}</a>
+
+<p>
+Welcome!
+
+<p>
+Ryan and the Circuit Caddie team
+
+
+{% endblock main %}
+
+{# vim: set syntax=htmldjango: #}
+

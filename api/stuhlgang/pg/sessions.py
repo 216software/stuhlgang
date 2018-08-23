@@ -20,14 +20,12 @@ class SessionFactory(psycopg2.extras.CompositeCaster):
 
 class Session(RelationWrapper):
 
-    def __init__(self, session_uuid, expires, person_uuid, news_message,
-        redirect_to_url, inserted, updated):
+    def __init__(self, session_uuid, expires, person_uuid,
+        inserted, updated):
 
         self.session_uuid = session_uuid
         self.expires = expires
         self.person_uuid = person_uuid
-        self.news_message = news_message
-        self.redirect_to_url = redirect_to_url
         self.inserted = inserted
         self.updated = updated
 

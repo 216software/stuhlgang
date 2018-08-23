@@ -1,5 +1,6 @@
 # vim: set expandtab ts=4 sw=4 filetype=python:
 
+import datetime
 import json
 import logging
 import random
@@ -162,3 +163,99 @@ class EndSession(Handler):
                 reply_timestamp=datetime.datetime.now(),
                 success=True,
                 session=updated_session))
+
+
+class StartSignup(Handler):
+
+    route_strings = set ([
+        "POST /api/signup",
+        "POST /api/sign-up",
+    ])
+
+    route = Handler.check_route_strings
+
+    required_json_keys = ["display_name", "email_address", "agreed_with_TOS"]
+
+    @Handler.require_json
+    def handle(self, req):
+
+        if not pg.people.Person.email_is_valid(req.json["email_address"]):
+
+            return Response.json(dict(
+                success=False,
+                reply_timestamp=datetime.datetime.now(),
+                message="Sorry, {email_address} is not a valid email!".format(**req.json)))
+
+        elif not pg.people.Person.email_address_is_new(
+            self.cw.get_pgconn(),
+            req.json["email_address"]):
+
+            return Response.json(dict(
+                success=False,
+                reply_timestamp=datetime.datetime.now(),
+                message="Sorry, Somebody else already registered "
+                    "email {email_address}!".format(**req.json)))
+
+        elif req.json["agreed_with_TOS"]:
+
+            inserted_person = pg.people.Person.insert(
+                self.cw.get_pgconn(),
+                req.json["display_name"],
+                req.json["email_address"],
+                datetime.datetime.now())
+
+            inserted_person.send_confirmation_code_via_email(
+                self.cw.make_smtp_connection())
+
+            return Response.json(dict(
+                success=True,
+                reply_timestamp=datetime.datetime.now(),
+                inserted_person=inserted_person,
+                message="Go check your email!"))
+
+        else:
+
+            return Response.json(dict(
+                success=False,
+                reply_timestamp=datetime.datetime.now(),
+                inserted_person=inserted_person,
+                message="Sorry, you must agree with the terms of service to use this application"))
+
+class ConfirmMembership(Handler):
+
+    route_strings = set([
+        "POST /api/confirm-email"
+    ])
+
+    route = Handler.check_route_strings
+
+    required_json_keys = ["email_address", "confirmation_code"]
+
+    @Handler.require_json
+    def handle(self, req):
+
+        try:
+
+            confirmed_person = pg.people.Person.confirm_email(
+                self.cw.get_pgconn(),
+                req.json["email_address"],
+                req.json["confirmation_code"])
+
+        except KeyError as ex:
+
+            return Response.json(dict(
+                success=False,
+
+                # This is yucky, but I don't know what else to do.
+                message=ex.args[0],
+
+                reply_timestamp=datetime.datetime.now()))
+
+        else:
+
+            return Response.json(dict(
+                confirmed_person=confirmed_person,
+                success=True,
+                message="You ({0}) are now confirmed!".format(confirmed_person.display_name),
+                reply_timestamp=datetime.datetime.now()))
+

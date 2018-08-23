@@ -79,6 +79,47 @@ End a session
 		"success": false
 	}
 
+Sign up as a new member
+-----------------------
+
+First, you gotta sign up::
+
+	$ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"matt+1@216software.com", "display_name": "Matt Wilson", "agreed_with_TOS":true}' http://stuhlgang.xps/api/sign-up
+	{
+		"inserted_person": {
+			"display_name": "Matt Wilson",
+			"email_address": "matt+1@216software.com",
+			"person_uuid": "ea1d8be7-7d5a-4314-9eca-c9b7e02b2ba0"
+		},
+		"message": "Go check your email!",
+		"reply_timestamp": "2018-08-23T16:37:14.477777",
+		"success": true
+	}
+
+Then you'll get an email with a random 4-digit code.  You gotta give that
+4-digit code back to us to verify your email::
+
+	$ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"matt+1@216software.com", "confirmation_code": "1234"}' http://stuhlgang.xps/api/confirm-email
+	{
+		"message": "Sorry, 1234 doesn't match the confirmation code for email matt+1@216software.com !",
+		"reply_timestamp": "2018-08-23T17:29:49.600195",
+		"success": false
+	}
+
+	$ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"matt+1@216software.com", "confirmation_code": "4754"}' http://stuhlgang.xps/api/confirm-email
+	{
+		"confirmed_person": {
+			"display_name": "Matt Wilson",
+			"email_address": "matt+1@216software.com",
+			"person_uuid": "ea1d8be7-7d5a-4314-9eca-c9b7e02b2ba0"
+		},
+		"message": "You (Matt Wilson) are now confirmed!",
+		"reply_timestamp": "2018-08-23T17:30:28.328279",
+		"success": true
+	}
+
+
+
 
 .. vim: set syntax=rst:
 
