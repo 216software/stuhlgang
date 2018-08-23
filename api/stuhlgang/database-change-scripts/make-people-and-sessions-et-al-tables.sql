@@ -22,6 +22,14 @@ values
 
 create domain email_address_type as citext check(value ~ E'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$');
 
+CREATE OR REPLACE FUNCTION random_between(low INT ,high INT)
+    RETURNS INT AS
+    $$
+    BEGIN
+        RETURN floor(random()* (high-low + 1) + low);
+    END;
+$$ language 'plpgsql' STRICT;
+
 create table people
 (
     person_uuid uuid primary key default uuid_generate_v4(),
@@ -36,8 +44,13 @@ create table people
 
     display_name citext,
 
-    -- super users are different than just local project administrators.
+    -- super users are different than just local administrators.
     is_superuser boolean not null default false,
+
+    -- Use this for whatever you want, for example, when you send an
+    -- "confirm signup" email or SMS message.
+    -- This will automatically get a random 4-digit code.
+     confirmation_code text default to_char(random_between(1, 9999), 'fm0000'),
 
     inserted timestamptz not null default now(),
     updated timestamptz

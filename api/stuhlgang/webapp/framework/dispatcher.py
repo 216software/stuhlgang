@@ -18,9 +18,6 @@ class Dispatcher(dispatcher.Dispatcher):
         log.info('Making stuhlgang handlers...')
 
         self.handlers.extend(self.make_handlers_from_module_string(
-            'stuhlgang.webapp.mockups.handlers'))
-
-        self.handlers.extend(self.make_handlers_from_module_string(
             'stuhlgang.webapp.dashboard.handlers'))
 
         self.handlers.extend(self.make_handlers_from_module_string(

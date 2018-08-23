@@ -16,7 +16,7 @@ class PersonFactory(psycopg2.extras.CompositeCaster):
 class Person(object):
 
     def __init__(self, person_uuid, email_address, salted_hashed_password,
-        person_status, display_name, inserted, updated):
+        person_status, display_name, confirm_code, is_superuser, inserted, updated):
 
         self.person_uuid = person_uuid
         self.email_address = email_address
@@ -24,11 +24,7 @@ class Person(object):
         self.person_status = person_status
         self.display_name = display_name
         self.is_superuser = is_superuser
-        self.is_institution_superuser = is_institution_superuser
-        self.did_acknowledge_eula = did_acknowledge_eula
-        self.challenge_question = challenge_question
-        self.challenge_question_answer = challenge_question_answer
-        self.date_password_changed=date_password_changed
+        self.confirm_code = confirm_code
         self.inserted = inserted
         self.updated = updated
 
@@ -83,3 +79,105 @@ class Person(object):
 
         if cursor.rowcount:
             return cursor.fetchone().p
+
+    @classmethod
+    def insert(cls, pgconn, display_name, email_address, password):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            insert into people
+            (display_name, email_address, salted_hashed_password)
+            values
+            (%(display_name)s, %(email_address)s, crypt(%(password)s, gen_salt('bf')))
+            returning people.*::people as inserted_person
+            """), locals())
+
+        return cursor.fetchone().inserted_person
+
+    def send_confirmation_code_via_email(self, smtpconn):
+
+        if self.person_status != "started registration":
+
+            raise ValueError("{0} has status {1}!".format(
+                self,
+                self.person_status))
+
+        else:
+
+            msg = MIMEMultipart('alternative')
+
+            msg['Subject'] = "Confirm your Circuit Caddie Signup!"
+            msg['From'] = "support@circuitapp.com"
+            msg['To'] = self.email_address
+
+            msg.attach(self.write_confirmation_email())
+
+            smtpconn.sendmail(
+                "support@circuitapp.com",
+                [self.email_address],
+                msg.as_string())
+
+            log.info(
+                "Just sent confirmation email to {0}.".format(
+                    self.email_address))
+
+    def write_confirmation_email(self):
+
+        if not self.confirm_code:
+            raise ValueError("Sorry, I don't have a confirm code!")
+
+        else:
+
+            from stuhlgang import configwrapper
+
+            cw = configwrapper.ConfigWrapper.get_default()
+
+            import locale
+            locale.setlocale(locale.LC_ALL, '')
+
+            html_tmpl = cw.j.get_template(
+                "emailtemplates/confirm-signup.html")
+
+            html_email = MIMEText(
+                html_tmpl.render(
+                    confirmation_code=self.confirm_code,
+                    person=self,
+                    locale=locale),
+                'html')
+
+            return html_email
+
+    def reset_confirmation_code(self, pgconn):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            update people
+            set confirmation_code = to_char(random_between(1, 9999), 'fm0000')
+            where person_uuid = %(person_uuid)s
+            returning people.*::people as updated_person
+            """), dict(person_uuid=self.person_uuid))
+
+        if cursor.rowcount:
+            return cursor.fetchone().updated_person
+
+        else:
+            raise KeyError("Sorry, no person {0} found!".format(self.person_uuid))
+
+    def set_confirmation_code(self, pgconn, new_code=None):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            update people
+            set confirmation_code = %(new_code)s
+            where person_uuid = %(person_uuid)s
+            returning people.*::people as updated_person
+            """), dict(person_uuid=self.person_uuid, new_code=new_code))
+
+        if cursor.rowcount:
+            return cursor.fetchone().updated_person
+
+        else:
+            raise KeyError("Sorry, no person {0} found!".format(self.person_uuid))

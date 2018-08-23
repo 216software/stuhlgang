@@ -1,16 +1,24 @@
 # vim: set expandtab ts=4 sw=4 filetype=python fileencoding=utf8:
 
+import logging
 import functools
 import json
 
 from horsemeat import HorsemeatJSONEncoder
+
+log = logging.getLogger(__name__)
 
 class StuhGangJSONEncoder(HorsemeatJSONEncoder):
 
     """
     Each project can modify this just for fun if they want.
     """
-    pass
+
+    def default(self, obj):
+
+        log.debug("In here with obj {0!r}...".format(obj))
+
+        return super(StuhGangJSONEncoder, self).default(obj)
 
 
 # TODO: add a docstring on this guy.
