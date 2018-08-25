@@ -259,3 +259,24 @@ class ConfirmMembership(Handler):
                 message="You ({0}) are now confirmed!".format(confirmed_person.display_name),
                 reply_timestamp=datetime.datetime.now()))
 
+
+class OptionsHandler(Handler):
+
+    def route(self, req):
+
+        if req.REQUEST_METHOD == "OPTIONS":
+            return self.handle
+
+    def handle(self, req):
+
+        resp = Response(
+            "200 OK",
+            [
+
+                ('Access-Control-Allow-Origin', dict(req.wz_req.headers).get('Origin', '*')),
+                ('Access-Control-Allow-Credentials', 'true'),
+                ("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Engaged-Auth-Token"),
+            ],
+            [])
+
+        return resp
