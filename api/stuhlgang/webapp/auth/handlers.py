@@ -125,6 +125,10 @@ class Authenticate(Handler):
 
         else:
 
+            log.info("Failed login attempt: {0} / {1}".format(
+                email_address,
+                password))
+
             return Response.json(dict(
                 message="Sorry, couldn't authenticate!",
                 reply_timestamp=datetime.datetime.now(),
