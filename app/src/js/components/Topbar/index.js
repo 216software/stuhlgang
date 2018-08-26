@@ -1,10 +1,13 @@
 import ko from 'knockout';
 import template from './template.html';
-import logout from '../../services/logout';
+import { removeItem } from '../../services/nativeStorage';
+import * as auth from '../../services/auth';
+import store from '../../services/store';
 
 class Topbar {
   constructor () {
     this.activeNav = ko.observable('home');
+
     this.pages = [
       {
         id: 'dashboard',
@@ -12,9 +15,21 @@ class Topbar {
         url: '/dashboard',
       },
     ];
+
+    this.session = store.session;
   }
 
-  logout = () => logout()
+  logout = async () => {
+    const response = await auth.logout();
+    if (response.success) {
+      await removeItem('session');
+      store.session(null);
+      store.loggedIn(false);
+      pager.navigate('login');
+    } else {
+      store.error(response.message);
+    }
+  }
 }
 
 ko.components.register('topbar', {

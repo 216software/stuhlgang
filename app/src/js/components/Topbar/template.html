@@ -30,12 +30,15 @@
                 ></a>
             </li>
         </ul>
-        <button
-            class="btn btn-outline-info"
-            type="button"
-            data-bind="click: logout"
-        >
-            Logout
-        </button>
+        <div data-bind="if: session">
+            <button
+                class="btn btn-link"
+                style="padding-left: 0; color: white;"
+                type="button"
+                data-bind="click: logout"
+            >
+                Logout
+            </button>
+        </div>
     </div>
 </nav>

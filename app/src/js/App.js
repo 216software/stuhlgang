@@ -1,14 +1,14 @@
-import Home from './viewmodels/Home';
 import Login from './viewmodels/Login';
 import Dashboard from './viewmodels/Dashboard';
 import store from './services/store';
+import { verify } from './services/auth';
+import { getItem } from './services/nativeStorage';
 import './components';
 
 global.store = store;
 
 class App {
   constructor () {
-    this.homeViewModel = new Home();
     this.loginViewModel = new Login();
     this.dashboardViewModel = new Dashboard();
 
@@ -19,8 +19,32 @@ class App {
 
   // eslint-disable-next-line
   initialize () {
-    console.log('initialize app');
+    this.verifySession();
   }
+
+  getSession = async () => {
+    try {
+      const session = await getItem('session');
+      return session;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  verifySession = async () => {
+    const session = await this.getSession();
+    this.session(session);
+
+    if (session) {
+      const response = await verify({ session: this.session() });
+      if (response.success) {
+        store.loggedIn(true);
+        return;
+      }
+    }
+
+    pager.navigate('login');
+  };
 }
 
 export default App;

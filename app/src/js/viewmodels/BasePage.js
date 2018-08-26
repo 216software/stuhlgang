@@ -1,5 +1,4 @@
 import store from '../services/store';
-import { getItem } from '../services/nativeStorage';
 
 class BasePage {
   constructor () {
@@ -7,12 +6,7 @@ class BasePage {
   }
 
   initialize = async () => {
-    try {
-      const session = await getItem('session');
-      this.store.session(session);
-    } catch (error) {
-      pager.navigate('login');
-    }
+    if (this.afterShow) this.afterShow();
   }
 }
 

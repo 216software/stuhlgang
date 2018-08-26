@@ -1,48 +1,44 @@
 import ko from 'knockout';
-import store from '../services/store';
-import { getItem, setItem } from '../services/nativeStorage';
-import request from '../services/request';
+import BasePage from './BasePage';
+import { setItem } from '../services/nativeStorage';
+import { login } from '../services/auth';
 
-class Login {
+class Login extends BasePage {
   constructor () {
+    super();
     this.email = ko.observable('');
     this.password = ko.observable('');
   }
 
-  initialize = async () => {
-    try {
-      const session = await getItem('session');
-      store.session(session);
-    } catch (error) {
-      console.log('no session');
+  afterShow = () => {
+    if (this.store.loggedIn()) {
+      pager.navigate('dashboard');
     }
   }
 
   onSubmit = async () => {
-    const response = await request('login', {
-      method: 'POST',
-      body: JSON.stringify({
-        email_address: this.email(),
-        password: this.password(),
-      }),
+    const response = await login({
+      email: this.email(),
+      password: this.password(),
     });
 
     if (response.success) {
       // store the session uuid
-      store.session(response.session.session_uuid);
+      this.store.session(response.session.session_uuid);
+      this.store.loggedIn(true);
       await setItem('session', response.session.session_uuid);
 
       // display success message and clear after a few seconds
-      store.error('');
-      store.info('You have been logged in');
+      this.store.error('');
+      this.store.info('You have been logged in');
       setTimeout(() => {
-        store.info('');
+        this.store.info('');
       }, 3000);
 
       pager.navigate('dashboard');
     } else {
-      store.info('');
-      store.error(response.message);
+      this.store.info('');
+      this.store.error(response.message);
     }
   }
 }
