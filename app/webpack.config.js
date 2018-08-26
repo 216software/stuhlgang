@@ -104,7 +104,7 @@ module.exports = (env) => {
       }),
 
       new webpack.DefinePlugin({
-        API_URL: env.NODE_ENV === 'production' ? JSON.stringify('production-url') : JSON.stringify('development-url'),
+        API_URL: env.NODE_ENV === 'production' ? JSON.stringify('production-url') : JSON.stringify('https://stuhlgang-dev.216software.com/api'),
       }),
     ],
   };

@@ -6,6 +6,7 @@
         "space-before-function-paren": ["error", "always"]
     },
     "globals": {
+        "fetch": true,
         "document": true,
         "cordova": true,
         "pager": true,

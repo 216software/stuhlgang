@@ -1,27 +1,25 @@
 import Home from './viewmodels/Home';
-import { getItem, setItem, removeItem } from './services/nativeStorage';
+import Login from './viewmodels/Login';
+import Dashboard from './viewmodels/Dashboard';
+import store from './services/store';
 import './components';
+
+global.store = store;
 
 class App {
   constructor () {
     this.homeViewModel = new Home();
+    this.loginViewModel = new Login();
+    this.dashboardViewModel = new Dashboard();
+
+    this.session = store.session;
+    this.error = store.error;
+    this.info = store.info;
   }
 
-  initialize = async () => {
-    await setItem('session', 'foobar');
-
-    let result = await getItem('session');
-    console.log(result);
-
-    await removeItem('session');
-
-    try {
-      result = await getItem('session');
-    } catch (error) {
-      result = null;
-    }
-
-    console.log(result);
+  // eslint-disable-next-line
+  initialize () {
+    console.log('initialize app');
   }
 }
 
