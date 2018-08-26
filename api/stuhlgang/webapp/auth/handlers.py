@@ -76,7 +76,7 @@ class VerifySessionUUID(Handler):
                 success=False,
                 message="Could not verify session"))
 
-class Authenticate(Handler):
+class AuthenticateWithEmailAndPassword(Handler):
 
     route_strings = set([
         "POST /api/authenticate",
@@ -133,7 +133,6 @@ class Authenticate(Handler):
                 message="Sorry, couldn't authenticate!",
                 reply_timestamp=datetime.datetime.now(),
                 success=False))
-
 
 class EndSession(Handler):
 
@@ -284,3 +283,63 @@ class OptionsHandler(Handler):
             [])
 
         return resp
+
+class StartSessionWithConfirmCode(Handler):
+
+    route_strings = set([
+        "POST /api/start-session-with-confirmation-code"
+    ])
+
+    route = Handler.check_route_strings
+
+    @Handler.require_json
+    def handle(self, req):
+
+        email_address = req.json["email_address"]
+        password = req.json["confirmation_code"]
+
+        session = None
+
+        session = pg.sessions.Session.maybe_start_new_session_after_checking_email_and_password(
+            self.cw.get_pgconn(),
+            email_address.strip(),
+            password)
+
+        if session:
+
+            person = pg.people.Person.by_person_uuid(
+                self.cw.get_pgconn(),
+                session.person_uuid)
+
+            log.info("{0} just logged in.".format(person.display_name))
+
+            resp = Response.json(dict(
+                reply_timestamp=datetime.datetime.now(),
+                message="Session created and will expire on {0}".format(
+                    session.expires),
+                success=True,
+                session=session,
+                person=person))
+
+            resp.set_session_cookie(
+                session.session_uuid,
+                self.cw.app_secret)
+
+            return resp
+
+        else:
+
+            log.info("Failed login attempt: {0} / {1}".format(
+                email_address,
+                password))
+
+            return Response.json(dict(
+                message="Sorry, couldn't authenticate!",
+                reply_timestamp=datetime.datetime.now(),
+                success=False))
+
+
+
+
+
+

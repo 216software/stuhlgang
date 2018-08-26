@@ -16,6 +16,7 @@ class Splash(Handler):
     route_strings = set(['GET /'])
     route = Handler.check_route_strings
 
+    @Handler.require_json
     def handle(self, req):
 
         return Response.json(dict(

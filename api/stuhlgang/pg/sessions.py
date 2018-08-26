@@ -137,3 +137,46 @@ class Session(RelationWrapper):
             raise KeyError(
                 "Could not find any session with session UUID {0}.".format(
                     session_uuid))
+
+    @classmethod
+    def maybe_start_new_session_after_checking_email_and_confirmation_code(
+        cls, pgconn, email_address, confirmation_code,
+        max_age_confirmation_code):
+
+        """
+        If the email address and confirmation_code match a row in the people
+        table, and the confirmation_code_set field isn't too far in the
+        past, then insert a new session and return it.
+
+        The max_age_confirmation_code should be a datetime.timedelta.
+
+        Also, update the confirmation_code to NULL.
+        """
+
+        qry = textwrap.dedent("""
+            with updated_person as (
+                update people
+                set confirmation_code = NULL
+                where email_address = %(email_address)s
+                and confirmation_code = %(confirmation_code)s
+
+                    and current_timestamp - confirmation_code_set < %(max_age_confirmation_code)s
+
+                returning *
+            )
+
+            insert into webapp_sessions
+            (person_uuid)
+            select person_uuid
+            from updated_person
+            returning webapp_sessions.*::webapp_sessions as new_session
+            """)
+
+        cursor = pgconn.cursor()
+
+        log.debug(cursor.mogrify(qry, locals()).decode("utf8"))
+
+        cursor.execute(qry, locals())
+
+        if cursor.rowcount:
+            return cursor.fetchone().new_session

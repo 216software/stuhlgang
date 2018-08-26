@@ -17,8 +17,8 @@ Verify a session
             "success": false
     }
 
-Start a session
----------------
+Start a session with an email and password
+------------------------------------------
 
 ::
 

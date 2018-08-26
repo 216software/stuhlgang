@@ -14,6 +14,10 @@ module_template_package = 'stuhlgang.webapp.framework.templates'
 
 class Handler(handler.Handler):
 
+    # This might seem goofy, but it allows methods defined in horsemeat
+    # to use our project's Response class.
+    Response = Response
+
     @property
     def four_zero_four_template(self):
         return 'framework_templates/404.html'

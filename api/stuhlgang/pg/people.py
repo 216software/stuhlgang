@@ -20,7 +20,8 @@ class PersonFactory(psycopg2.extras.CompositeCaster):
 class Person(object):
 
     def __init__(self, person_uuid, email_address, salted_hashed_password,
-        person_status, display_name, confirmation_code, is_superuser,
+        person_status, display_name, confirmation_code,
+        confirmation_code_set, is_superuser,
         agreed_with_tos, inserted, updated):
 
         self.person_uuid = person_uuid
@@ -30,6 +31,7 @@ class Person(object):
         self.display_name = display_name
         self.is_superuser = is_superuser
         self.confirmation_code = confirmation_code
+        self.confirmation_code_set = confirmation_code_set
         self.agreed_with_tos = agreed_with_tos
         self.inserted = inserted
         self.updated = updated
@@ -160,7 +162,9 @@ class Person(object):
 
         cursor.execute(textwrap.dedent("""
             update people
-            set confirmation_code = to_char(random_between(1, 9999), 'fm0000')
+            set confirmation_code = to_char(random_between(1, 9999),
+            'fm0000'),
+            confirmation_code_set = current_timestamp
             where person_uuid = %(person_uuid)s
             returning people.*::people as updated_person
             """), dict(person_uuid=self.person_uuid))
@@ -177,7 +181,12 @@ class Person(object):
 
         cursor.execute(textwrap.dedent("""
             update people
-            set confirmation_code = %(new_code)s
+            set confirmation_code = %(new_code)s,
+
+            confirmation_code_set = case when %(new_code)s is null then
+            null else current_timestamp
+            end
+
             where person_uuid = %(person_uuid)s
             returning people.*::people as updated_person
             """), dict(person_uuid=self.person_uuid, new_code=new_code))
@@ -228,6 +237,10 @@ class Person(object):
 
     @classmethod
     def confirm_email(cls, pgconn, email_address, confirmation_code):
+
+        """
+        This means to mark this email address as confirmed.
+        """
 
         cursor = pgconn.cursor()
 
