@@ -3,7 +3,7 @@ PyYAML
 Werkzeug
 decorator
 gunicorn
-horsemeat>=2.20.3
+horsemeat>=2.20.5
 ipython
 psycopg2
 colorlog
