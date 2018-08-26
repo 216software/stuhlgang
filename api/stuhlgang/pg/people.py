@@ -105,30 +105,22 @@ class Person(object):
 
     def send_confirmation_code_via_email(self, smtpconn):
 
-        if self.person_status != "started registration":
+        msg = MIMEMultipart('alternative')
 
-            raise ValueError("{0} has status {1}!".format(
-                self,
-                self.person_status))
+        msg['Subject'] = "Confirm your Help Me 2 Poop membership!"
+        msg['From'] = "support@helpme2poop.com"
+        msg['To'] = self.email_address
 
-        else:
+        msg.attach(self.write_confirmation_email())
 
-            msg = MIMEMultipart('alternative')
+        smtpconn.sendmail(
+            "support@helpme2poop.com",
+            [self.email_address],
+            msg.as_string())
 
-            msg['Subject'] = "Confirm your Help Me 2 Poop membership!"
-            msg['From'] = "support@helpme2poop.com"
-            msg['To'] = self.email_address
-
-            msg.attach(self.write_confirmation_email())
-
-            smtpconn.sendmail(
-                "support@helpme2poop.com",
-                [self.email_address],
-                msg.as_string())
-
-            log.info(
-                "Just sent confirmation email to {0}.".format(
-                    self.email_address))
+        log.info(
+            "Just sent confirmation email to {0}.".format(
+                self.email_address))
 
     def write_confirmation_email(self):
 

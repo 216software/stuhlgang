@@ -20,6 +20,8 @@ Verify a session
 Start a session with an email and password
 ------------------------------------------
 
+Don't bother with this!
+
 ::
 
 	$ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"evanmicahstern@gmail.com", "password":"abc123"}' https://stuhlgang-dev.216software.com/api/start-session
@@ -48,6 +50,21 @@ See that session->session_uuid?  You'll need that.  Verify it for fun::
 
 
     $ curl https://stuhlgang-dev.216software.com/api/verify-session-uuid?session_uuid=25a8babc-8db1-45f9-a732-aed57b3cfd00
+
+Ask for a new confirmation code
+-------------------------------
+
+::
+
+    curl -H 'Content-Type: application/json' -X POST -d \
+    '{"email_address":"matt@216software.com"}' \
+    http://stuhlgang.xps/api/send-confirmation-code
+
+    {
+        "message": "Sent a confirmation code to matt@216software.com!",
+        "reply_timestamp": "2018-08-26T18:02:04.976376",
+        "success": true
+    }
 
 End a session
 -------------
@@ -119,7 +136,34 @@ Then you'll get an email with a random 4-digit code.  You gotta give that
 	}
 
 
+Start a session with a confirmation code
+----------------------------------------
+
+This assumes you asked for one first!  Right now, I'm honoring them for
+three days until you gotta ask for a new one.
+
+::
+
+    $ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"matt@216software.com", "confirmation_code": "5967"}' http://stuhlgang.xps/api/start-session-with-confirmation-code
+
+    {
+    "message": "Session created and will expire on 2019-08-26 18:06:36.266339-04:00",
+    "person": {
+        "display_name": "Matt Wilson",
+        "email_address": "matt@216software.com",
+        "person_uuid": "d5ce6695-8471-4bdd-82aa-4dd0068436d8"
+    },
+    "reply_timestamp": "2018-08-26T18:06:36.271337",
+    "session": {
+        "expired": false,
+        "expires": "2019-08-26T18:06:36.266339-04:00",
+        "inserted": "2018-08-26T18:06:36.266339-04:00",
+        "person_uuid": "d5ce6695-8471-4bdd-82aa-4dd0068436d8",
+        "session_uuid": "8690cf82-290b-4ffc-a6a3-8c54e92bdfd7",
+        "updated": null
+    },
+    "success": true
+    }
 
 
 .. vim: set syntax=rst:
-

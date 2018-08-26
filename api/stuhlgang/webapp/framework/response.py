@@ -7,6 +7,7 @@ import clepy
 from horsemeat.webapp import response
 
 from stuhlgang import fancyjsondumps
+from stuhlgang import configwrapper
 
 log = logging.getLogger(__name__)
 
@@ -15,6 +16,9 @@ class Response(response.Response):
     """
     The Sthuhlgang response ALWAYS adds an extra header.
     """
+
+    configwrapper = configwrapper
+    fancyjsondumps = fancyjsondumps
 
     def __init__(self, status, headers, body):
 

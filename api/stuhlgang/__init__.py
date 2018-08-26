@@ -16,8 +16,6 @@ class StuhGangJSONEncoder(HorsemeatJSONEncoder):
 
     def default(self, obj):
 
-        log.debug("In here with obj {0!r}...".format(obj))
-
         return super(StuhGangJSONEncoder, self).default(obj)
 
 

@@ -249,7 +249,6 @@ class ConfirmMembership(Handler):
             return Response.json(dict(
                 success=False,
 
-                # This is yucky, but I don't know what else to do.
                 message=ex.args[0],
 
                 reply_timestamp=datetime.datetime.now()))
@@ -295,15 +294,16 @@ class StartSessionWithConfirmCode(Handler):
     @Handler.require_json
     def handle(self, req):
 
-        email_address = req.json["email_address"]
-        password = req.json["confirmation_code"]
+        email_address = req.json["email_address"].strip()
+        confirmation_code = req.json["confirmation_code"].strip()
 
         session = None
 
-        session = pg.sessions.Session.maybe_start_new_session_after_checking_email_and_password(
+        session = pg.sessions.Session.maybe_start_new_session_after_checking_email_and_confirmation_code(
             self.cw.get_pgconn(),
-            email_address.strip(),
-            password)
+            email_address,
+            confirmation_code,
+            datetime.timedelta(days=3))
 
         if session:
 
@@ -331,15 +331,35 @@ class StartSessionWithConfirmCode(Handler):
 
             log.info("Failed login attempt: {0} / {1}".format(
                 email_address,
-                password))
+                confirmation_code))
 
             return Response.json(dict(
                 message="Sorry, couldn't authenticate!",
                 reply_timestamp=datetime.datetime.now(),
                 success=False))
 
+class SendConfirmationCode(Handler):
 
+    route_strings = set(["POST /api/send-confirmation-code"])
+    route = Handler.check_route_strings
 
+    required_json_keys = ["email_address"]
 
+    @Handler.require_json
+    def handle(self, req):
 
+        person = pg.people.Person.by_email_address(
+            self.cw.get_pgconn(),
+            req.json["email_address"].strip())
+
+        if not person.confirmation_code:
+            person = person.reset_confirmation_code(self.cw.get_pgconn())
+
+        person.send_confirmation_code_via_email(
+            self.cw.make_smtp_connection())
+
+        return Response.json(dict(
+            message="Sent a confirmation code to {0}!".format(person.email_address),
+            reply_timestamp=datetime.datetime.now(),
+            success=True))
 

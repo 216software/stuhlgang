@@ -150,17 +150,19 @@ class Session(RelationWrapper):
 
         The max_age_confirmation_code should be a datetime.timedelta.
 
-        Also, update the confirmation_code to NULL.
+        Also, update the confirmation_code to NULL and the
+        confirmation_code_set to NULL.
         """
 
         qry = textwrap.dedent("""
             with updated_person as (
                 update people
-                set confirmation_code = NULL
+                set confirmation_code = NULL,
+                confirmation_code_set = NULL
+
                 where email_address = %(email_address)s
                 and confirmation_code = %(confirmation_code)s
-
-                    and current_timestamp - confirmation_code_set < %(max_age_confirmation_code)s
+                and current_timestamp - confirmation_code_set < %(max_age_confirmation_code)s
 
                 returning *
             )
