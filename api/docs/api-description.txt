@@ -27,27 +27,27 @@ Don't bother with this!
 
 ::
 
-	$ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"evanmicahstern@gmail.com", "password":"abc123"}' https://stuhlgang-dev.216software.com/api/start-session
-	{
-		"message": "Session created and will expire on 2018-08-23 14:36:18.408752-04:00",
-		"person": {
-			"display_name": "Evan Stern",
-			"email_address": "evanmicahstern@gmail.com",
-			"person_uuid": "1b7b1b10-5680-40ed-8e62-f8da43e35acf"
-		},
-		"reply_timestamp": "2018-08-23T13:36:18.422071",
-		"session": {
-			"expired": false,
-			"expires": "2018-08-23T14:36:18.408752-04:00",
-			"inserted": "2018-08-23T13:36:18.408752-04:00",
-			"news_message": null,
-			"person_uuid": "1b7b1b10-5680-40ed-8e62-f8da43e35acf",
-			"redirect_to_url": null,
-			"session_uuid": "25a8babc-8db1-45f9-a732-aed57b3cfd00",
-			"updated": null
-		},
-		"success": true
-	}
+    $ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"evanmicahstern@gmail.com", "password":"abc123"}' https://stuhlgang-dev.216software.com/api/start-session
+    {
+        "message": "Session created and will expire on 2018-08-23 14:36:18.408752-04:00",
+        "person": {
+            "display_name": "Evan Stern",
+            "email_address": "evanmicahstern@gmail.com",
+            "person_uuid": "1b7b1b10-5680-40ed-8e62-f8da43e35acf"
+        },
+        "reply_timestamp": "2018-08-23T13:36:18.422071",
+        "session": {
+            "expired": false,
+            "expires": "2018-08-23T14:36:18.408752-04:00",
+            "inserted": "2018-08-23T13:36:18.408752-04:00",
+            "news_message": null,
+            "person_uuid": "1b7b1b10-5680-40ed-8e62-f8da43e35acf",
+            "redirect_to_url": null,
+            "session_uuid": "25a8babc-8db1-45f9-a732-aed57b3cfd00",
+            "updated": null
+        },
+        "success": true
+    }
 
 See that session->session_uuid?  You'll need that.  Verify it for fun::
 
@@ -74,69 +74,69 @@ End a session
 
 ::
 
-	$ curl -H 'Content-Type: application/json' -X POST -d '{"session_uuid":"25a8babc-8db1-45f9-a732-aed57b3cfd00"}' https://stuhlgang-dev.216software.com/api/end-session
-	{
-		"message": "Ended session 25a8babc-8db1-45f9-a732-aed57b3cfd00.",
-		"reply_timestamp": "2018-08-23T13:42:57.261716",
-		"session": {
-			"expired": true,
-			"expires": "2018-08-23T13:42:57.057293-04:00",
-			"inserted": "2018-08-23T13:36:18.408752-04:00",
-			"news_message": null,
-			"person_uuid": "1b7b1b10-5680-40ed-8e62-f8da43e35acf",
-			"redirect_to_url": null,
-			"session_uuid": "25a8babc-8db1-45f9-a732-aed57b3cfd00",
-			"updated": "2018-08-23T13:42:57.057293-04:00"
-		},
-		"success": true
-	}
+    $ curl -H 'Content-Type: application/json' -X POST -d '{"session_uuid":"25a8babc-8db1-45f9-a732-aed57b3cfd00"}' https://stuhlgang-dev.216software.com/api/end-session
+    {
+        "message": "Ended session 25a8babc-8db1-45f9-a732-aed57b3cfd00.",
+        "reply_timestamp": "2018-08-23T13:42:57.261716",
+        "session": {
+            "expired": true,
+            "expires": "2018-08-23T13:42:57.057293-04:00",
+            "inserted": "2018-08-23T13:36:18.408752-04:00",
+            "news_message": null,
+            "person_uuid": "1b7b1b10-5680-40ed-8e62-f8da43e35acf",
+            "redirect_to_url": null,
+            "session_uuid": "25a8babc-8db1-45f9-a732-aed57b3cfd00",
+            "updated": "2018-08-23T13:42:57.057293-04:00"
+        },
+        "success": true
+    }
 
 
-	$ curl https://stuhlgang-dev.216software.com/api/verify-session-uuid?session_uuid=25a8babc-8db1-45f9-a732-aed57b3cfd00
-	{
-		"message": "Could not verify session",
-		"reply_timestamp": "2018-08-23T13:43:05.470290",
-		"success": false
-	}
+    $ curl https://stuhlgang-dev.216software.com/api/verify-session-uuid?session_uuid=25a8babc-8db1-45f9-a732-aed57b3cfd00
+    {
+        "message": "Could not verify session",
+        "reply_timestamp": "2018-08-23T13:43:05.470290",
+        "success": false
+    }
 
 Sign up as a new member
 -----------------------
 
 First, you gotta sign up::
 
-	$ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"matt+1@216software.com", "display_name": "Matt Wilson", "agreed_with_TOS":true}' http://stuhlgang.xps/api/sign-up
-	{
-		"inserted_person": {
-			"display_name": "Matt Wilson",
-			"email_address": "matt+1@216software.com",
-			"person_uuid": "ea1d8be7-7d5a-4314-9eca-c9b7e02b2ba0"
-		},
-		"message": "Go check your email!",
-		"reply_timestamp": "2018-08-23T16:37:14.477777",
-		"success": true
-	}
+    $ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"matt+1@216software.com", "display_name": "Matt Wilson", "agreed_with_TOS":true}' http://stuhlgang.xps/api/sign-up
+    {
+        "inserted_person": {
+            "display_name": "Matt Wilson",
+            "email_address": "matt+1@216software.com",
+            "person_uuid": "ea1d8be7-7d5a-4314-9eca-c9b7e02b2ba0"
+        },
+        "message": "Go check your email!",
+        "reply_timestamp": "2018-08-23T16:37:14.477777",
+        "success": true
+    }
 
 Then you'll get an email with a random 4-digit code.  You gotta give that
 4-digit code back to us to verify your email::
 
-	$ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"matt+1@216software.com", "confirmation_code": "1234"}' http://stuhlgang.xps/api/confirm-email
-	{
-		"message": "Sorry, 1234 doesn't match the confirmation code for email matt+1@216software.com !",
-		"reply_timestamp": "2018-08-23T17:29:49.600195",
-		"success": false
-	}
+    $ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"matt+1@216software.com", "confirmation_code": "1234"}' http://stuhlgang.xps/api/confirm-email
+    {
+        "message": "Sorry, 1234 doesn't match the confirmation code for email matt+1@216software.com !",
+        "reply_timestamp": "2018-08-23T17:29:49.600195",
+        "success": false
+    }
 
-	$ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"matt+1@216software.com", "confirmation_code": "4754"}' http://stuhlgang.xps/api/confirm-email
-	{
-		"confirmed_person": {
-			"display_name": "Matt Wilson",
-			"email_address": "matt+1@216software.com",
-			"person_uuid": "ea1d8be7-7d5a-4314-9eca-c9b7e02b2ba0"
-		},
-		"message": "You (Matt Wilson) are now confirmed!",
-		"reply_timestamp": "2018-08-23T17:30:28.328279",
-		"success": true
-	}
+    $ curl -H 'Content-Type: application/json' -X POST -d '{"email_address":"matt+1@216software.com", "confirmation_code": "4754"}' http://stuhlgang.xps/api/confirm-email
+    {
+        "confirmed_person": {
+            "display_name": "Matt Wilson",
+            "email_address": "matt+1@216software.com",
+            "person_uuid": "ea1d8be7-7d5a-4314-9eca-c9b7e02b2ba0"
+        },
+        "message": "You (Matt Wilson) are now confirmed!",
+        "reply_timestamp": "2018-08-23T17:30:28.328279",
+        "success": true
+    }
 
 
 Start a session with a confirmation code
@@ -168,5 +168,86 @@ three days until you gotta ask for a new one.
     "success": true
     }
 
+Patient data
+============
+
+Parents are "caretakers".  Doctors are "providers" or maybe
+"hcproviders" where "hc" stands for "health care".
+
+Get a list of patients for a caretaker
+--------------------------------------
+
+You gotta have a valid session UUID.  You can pass it in as a query
+string parameter::
+
+    $ curl -X GET
+    http://stuhlgang.xps/api/patients-for-caretaker?session_uuid=52df43de-4baa-4ed1-987c-b49a35331fe4
+    {
+            "limit": 10,
+            "message": "Retrieved 0 patients",
+            "offset": 0,
+            "patients": [],
+            "reply_timestamp": "2018-08-27T14:18:09.685783",
+            "success": true
+    }
+
+Or as a cookie::
+
+    $ curl -X GET -H 'Cookie: session_uuid=dc9aa63d-3e58-4846-9e50-8b63d9c83283 session_hexdigest=4ebd5bedb8eb78e75e46c9f1a33197bb' -X GET http://stuhlgang.xps/api/patients-for-caretaker
+
+Remember that cookies don't work right for cordova.
+
+Store a patient for a caretaker
+-------------------------------
+
+Notice how there is an "extra_notes" field and an "extra_data" field.
+extra_notes is text, extra_data is JSON.  Cram whatever you want in there for
+now!
+
+Later, I'll break stuff into separate columns.
+
+::
+
+    $ curl -H 'Content-Type: text/plain' \
+    -d '{"session_uuid": "52df43de-4baa-4ed1-987c-b49a35331fe4", "display_name":"Charlie", "extra_notes":"does not complain of being constipated", "extra_data": {"birthdate": "2005-04-06"}}' \
+    -X POST http://stuhlgang.xps/api/add-patient-for-caretaker
+    {
+        "link": [
+            "b6b7ee97-4af1-4610-9d85-1e9f488dd848",
+            58,
+            null,
+            null,
+            "2018-08-27T14:24:22.403500-04:00",
+            null
+    ],
+    "message": "Stored patient Charlie!",
+    "new_patient": {
+        "display_name": "Charlie",
+        "extra_data": {
+            "birthdate": "2005-04-06"
+        },
+        "extra_notes": "does not complain of being constipated",
+        "inserted": "2018-08-27T14:24:22.403500-04:00",
+        "patient_number": 58,
+        "updated": null
+    },
+    "reply_timestamp": "2018-08-27T14:24:22.414023",
+    "success": true
+    }
+
+Get recent patient events, aka, poops
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
 
 .. vim: set syntax=rst:
+

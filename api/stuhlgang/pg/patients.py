@@ -101,7 +101,7 @@ class Patient(RelationWrapper):
             insert into patient_caretakers
             (patient_number, caretaker, extra_notes, extra_data)
             values
-            (%(patient_number)s, %(caretaker)s, %(extra_notes)s, %(j)s)
+            (%(patient_number)s, %(caretaker_uuid)s, %(extra_notes)s, %(j)s)
             returning patient_caretakers.*::patient_caretakers as
             patient_caretaker_link
             """), locals())
