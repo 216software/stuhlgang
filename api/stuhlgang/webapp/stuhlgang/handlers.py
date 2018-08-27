@@ -132,15 +132,15 @@ class StorePatientEvent(Handler):
                 self.cw.get_pgconn(),
                 req.json["patient_number"],
                 req.json["event_timestamp"],
+                req.user.person_uuid,
                 req.json["extra_notes"],
                 req.json["extra_data"])
 
             return Response.json(dict(
                 success=True,
                 reply_timestamp=datetime.datetime.now(),
-                message="Stored patient event {0}!".format(new_patient.display_name),
-                new_patient=new_patient,
-                link=link))
+                message="Stored patient event {0}!".format(pe.patient_event_number),
+                patient_event=pe))
 
 class PatientEvents(Handler):
 
@@ -172,13 +172,13 @@ class PatientEvents(Handler):
 
             patient_events = list(pg.patients.PatientEvent.by_patient_number(
                 self.cw.get_pgconn(),
-                req.wz_req.args["person_number"],
+                req.wz_req.args["patient_number"],
                 offset,
                 limit))
 
             total_event_count = pg.patients.PatientEvent.count_patient_events(
                 self.cw.get_pgconn(),
-                req.wz_req.args["person_number"])
+                req.wz_req.args["patient_number"])
 
             return Response.json(dict(
                 success=True,

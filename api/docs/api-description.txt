@@ -238,15 +238,42 @@ Later, I'll break stuff into separate columns.
 Get recent patient events, aka, poops
 -------------------------------------
 
+You need a patient number for this::
 
+    $ curl -X GET 'http://stuhlgang.xps/api/patient-events?session_uuid=52df43de-4baa-4ed1-987c-b49a35331fe4&patient_number=58'
+    {
+       "limit": 10,
+        "message": "Retrieved 0 events of 0 total.",
+        "offset": 0,
+        "patient_events": [],
+        "reply_timestamp": "2018-08-27T14:32:54.942959",
+        "success": true
+    }
 
+Store a patient event, aka, a dook
+----------------------------------
 
+::
 
-
-
-
-
-
+    $ curl -H 'Content-Type: text/plain' -X POST -d '{"session_uuid": "52df43de-4baa-4ed1-987c-b49a35331fe4", "patient_number": 58, "event_timestamp": "018-08-27T14:35:37-04:00", "extra_notes":"smear", "extra_data": {"a":11, "b": 12}}' http://stuhlgang.xps/api/store-patient-event
+    {
+        "message": "Stored patient event 27!",
+        "patient_event": {
+            "event_timestamp": "0018-08-27T13:39:35-04:56",
+            "extra_data": {
+                "a": 11,
+                "b": 12
+            },
+            "extra_notes": "smear",
+            "inserted": "2018-08-27T14:41:59.070802-04:00",
+            "patient_event_number": 27,
+            "patient_number": 58,
+            "stored_by": "b6b7ee97-4af1-4610-9d85-1e9f488dd848",
+            "updated": null
+        },
+        "reply_timestamp": "2018-08-27T14:41:59.079145",
+        "success": true
+    }
 
 
 .. vim: set syntax=rst:
