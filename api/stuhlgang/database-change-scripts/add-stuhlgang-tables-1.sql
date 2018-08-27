@@ -71,15 +71,23 @@ execute procedure set_updated_column();
 
 create table patient_events
 (
+
+    patient_event_number serial primary key,
+
     patient_number integer not null references patients
     on delete cascade,
-
-    extra_notes text,
-    extra_data json,
 
     -- this is when the poop happened, not when the record was stored in
     -- our system.
     event_timestamp timestamptz not null default now(),
+
+    unique (patient_number, event_timestamp),
+
+    stored_by uuid not null references people (person_uuid)
+    on delete cascade,
+
+    extra_notes text,
+    extra_data json,
 
     inserted timestamptz not null default now(),
     updated timestamptz

@@ -126,6 +126,21 @@ class Patient(RelationWrapper):
 
         return cursor.fetchone().patient_provider_link
 
+    @staticmethod
+    def verify_is_my_caretaker(pgconn, patient_number, caretaker_uuid):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            select patient_caretakers.*::patient_caretakers as patient_caretaker_link
+            from patient_caretakers
+            where patient_number =  %(patient_number)s
+            and caretaker = %(caretaker_uuid)s
+            """), locals())
+
+        if cursor.rowcount:
+            return cursor.fetchone().patient_caretaker_link
+
 class PatientEventFactory(psycopg2.extras.CompositeCaster):
 
     def make(self, values):
@@ -134,11 +149,13 @@ class PatientEventFactory(psycopg2.extras.CompositeCaster):
 
 class PatientEvent(RelationWrapper):
 
-    def __init__(self, patient_number, extra_notes, extra_data,
-        inserted, updated):
+    def __init__(self, patient_event_number, patient_number, event_timestamp,
+        stored_by, extra_notes, extra_data, inserted, updated):
 
+        self.patient_event_number = patient_event_number
         self.patient_number = patient_number
-        self.display_name = display_name
+        self.event_timestamp = event_timestamp
+        self.stored_by = stored_by
         self.extra_notes = extra_notes
         self.extra_data = extra_data
         self.inserted = inserted
@@ -162,7 +179,7 @@ class PatientEvent(RelationWrapper):
             yield row.pe
 
     @classmethod
-    def insert(cls, pgconn, patient_number, extra_notes, extra_data):
+    def insert(cls, pgconn, patient_number, event_timestamp, extra_notes, extra_data):
 
         j = psycopg2.extras.Json(extra_data)
 
@@ -170,12 +187,24 @@ class PatientEvent(RelationWrapper):
 
         cursor.execute(textwrap.dedent("""
             insert into patient_events
-            (patient_number, extra_notes, extra_data)
+            (patient_number, event_timestamp, extra_notes, extra_data)
             values
-            (%(patient_number)s, %(extra_notes)s, %(j)s)
+            (%(patient_number)s, %(event_timestamp)s, %(extra_notes)s, %(j)s)
             returning patient_events.*::patient_events as
             inserted_patient_event
             """), locals())
 
         return cursor.fetchone().inserted_patient_event
 
+    @staticmethod
+    def count_patient_events(pgconn, patient_number):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            select count(*)
+            from patient_events
+            where patient_number = %(patient_number)s
+            """), locals())
+
+        return cursor.fetchone().count
