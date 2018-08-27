@@ -1,11 +1,15 @@
-<div data-bind="!patients.length">
+<div data-bind="if: isEmpty()">
     <h3>No patients yet</h3>
 </div>
 
-<div class="list-group list-group-flush">
+<div
+    class="list-group list-group-flush"
+    data-bind="foreach: patients"
+>
     <a
         class="list-group-item list-group-item-action"
-        data-bind="foreach: patients"
+        data-bind="page-href: $parent.patientUrl($data)"
     >
+        <span data-bind="text: name" />
     </a>
 </div>
