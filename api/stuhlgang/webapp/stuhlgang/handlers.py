@@ -9,8 +9,11 @@ from stuhlgang import pg
 
 log = logging.getLogger(__name__)
 
-# module_template_prefix = 'stuhlgang'
-# module_template_package = 'stuhlgang.webapp.stuhlgang.templates'
+# TODO: for now, do not comment these out or remove them.  Later, move
+# these into the dashboard handlers,  because they're the only folks
+# that are using them.
+module_template_prefix = 'stuhlgang'
+module_template_package = 'stuhlgang.webapp.stuhlgang.templates'
 
 class Splash(Handler):
 
@@ -28,7 +31,7 @@ class Splash(Handler):
 class PatientsForCaretaker(Handler):
 
     route_strings = set([
-        "GET /patients-for-caretaker",
+        "GET /api/patients-for-caretaker",
     ])
 
     route = Handler.check_route_strings
@@ -39,7 +42,7 @@ class PatientsForCaretaker(Handler):
         offset = int(req.wz_req.args.get("offset", 0))
         limit = int(req.wz_req.args.get("offset", 10))
 
-        patients = list(pg.stuhlgang.Patient.patients_for_caretaker(
+        patients = list(pg.patients.Patient.patients_for_caretaker(
             self.cw.get_pgconn(),
             req.user.person_uuid,
             offset,
@@ -57,7 +60,7 @@ class PatientsForCaretaker(Handler):
 class AddPatientForCaretaker(Handler):
 
     route_strings = set([
-        "POST /add-patient-for-caretaker",
+        "POST /api/add-patient-for-caretaker",
     ])
 
     route = Handler.check_route_strings
@@ -72,13 +75,13 @@ class AddPatientForCaretaker(Handler):
     @Handler.require_json
     def handle(self, req):
 
-        new_patient = pg.stuhlgang.Patient.insert(
+        new_patient = pg.patients.Patient.insert(
             self.cw.get_pgconn(),
             req.json["display_name"],
             req.json["extra_notes"],
             req.json["extra_data"])
 
-        link = pg.stuhlgang.Patient.link_to_caretaker(
+        link = pg.patients.Patient.link_to_caretaker(
             self.cw.get_pgconn(),
             new_patient.patient_number,
             req.user.person_uuid,
@@ -95,7 +98,7 @@ class AddPatientForCaretaker(Handler):
 class StorePatientEvent(Handler):
 
     route_strings = set([
-        "POST /store-patient-event",
+        "POST /api/store-patient-event",
     ])
 
     route = Handler.check_route_strings
@@ -111,7 +114,7 @@ class StorePatientEvent(Handler):
     @Handler.require_json
     def handle(self, req):
 
-        verified_caretaker = pg.stuhlgange.Patient.verify_is_my_caretaker(
+        verified_caretaker = pg.patients.Patient.verify_is_my_caretaker(
             self.cw.get_pgconn(),
             req.json["patient_number"],
             req.user.person_uuid)
@@ -125,7 +128,7 @@ class StorePatientEvent(Handler):
 
         else:
 
-            pe = pg.stuhlgang.PatientEvent.insert(
+            pe = pg.patients.PatientEvent.insert(
                 self.cw.get_pgconn(),
                 req.json["patient_number"],
                 req.json["event_timestamp"],
@@ -150,7 +153,7 @@ class PatientEvents(Handler):
     @Handler.get_session_from_cookie_or_json_or_QS
     def handle(self, req):
 
-        verified_caretaker = pg.stuhlgange.Patient.verify_is_my_caretaker(
+        verified_caretaker = pg.patients.Patient.verify_is_my_caretaker(
             self.cw.get_pgconn(),
             req.wz_req.args["patient_number"],
             req.user.person_uuid)
@@ -167,13 +170,13 @@ class PatientEvents(Handler):
             offset = int(req.wz_req.args.get("offset", 0))
             limit = int(req.wz_req.args.get("offset", 10))
 
-            patient_events = list(pg.stuhlgang.PatientEvent.by_patient_number(
+            patient_events = list(pg.patients.PatientEvent.by_patient_number(
                 self.cw.get_pgconn(),
                 req.wz_req.args["person_number"],
                 offset,
                 limit))
 
-            total_event_count = pg.stuhlgang.PatientEvent.count_patient_events(
+            total_event_count = pg.patients.PatientEvent.count_patient_events(
                 self.cw.get_pgconn(),
                 req.wz_req.args["person_number"])
 

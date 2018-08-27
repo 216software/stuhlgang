@@ -121,6 +121,8 @@ class AuthenticateWithEmailAndPassword(Handler):
                 session.session_uuid,
                 self.cw.app_secret)
 
+            log.debug(resp.headers)
+
             return resp
 
         else:
@@ -324,6 +326,8 @@ class StartSessionWithConfirmCode(Handler):
             resp.set_session_cookie(
                 session.session_uuid,
                 self.cw.app_secret)
+
+            log.debug(resp.headers)
 
             return resp
 
