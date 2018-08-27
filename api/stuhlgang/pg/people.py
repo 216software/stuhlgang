@@ -9,6 +9,8 @@ from email.mime.text import MIMEText
 
 import psycopg2.extras
 
+from stuhlgang.pg import RelationWrapper
+
 log = logging.getLogger(__name__)
 
 class PersonFactory(psycopg2.extras.CompositeCaster):
@@ -17,7 +19,7 @@ class PersonFactory(psycopg2.extras.CompositeCaster):
         d = dict(zip(self.attnames, values))
         return Person(**d)
 
-class Person(object):
+class Person(RelationWrapper):
 
     def __init__(self, person_uuid, email_address, salted_hashed_password,
         person_status, display_name, confirmation_code,
