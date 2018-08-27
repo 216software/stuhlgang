@@ -179,7 +179,7 @@ class PatientEvent(RelationWrapper):
             yield row.pe
 
     @classmethod
-    def insert(cls, pgconn, patient_number, event_timestamp, extra_notes, extra_data):
+    def insert(cls, pgconn, patient_number, event_timestamp, stored_by, extra_notes, extra_data):
 
         j = psycopg2.extras.Json(extra_data)
 
@@ -187,9 +187,9 @@ class PatientEvent(RelationWrapper):
 
         cursor.execute(textwrap.dedent("""
             insert into patient_events
-            (patient_number, event_timestamp, extra_notes, extra_data)
+            (patient_number, event_timestamp, stored_by, extra_notes, extra_data)
             values
-            (%(patient_number)s, %(event_timestamp)s, %(extra_notes)s, %(j)s)
+            (%(patient_number)s, %(event_timestamp)s, %(stored_by)s, %(extra_notes)s, %(j)s)
             returning patient_events.*::patient_events as
             inserted_patient_event
             """), locals())

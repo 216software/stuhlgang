@@ -31,8 +31,8 @@ class ConfigWrapper(configwrapper.ConfigWrapper):
 
             ("people", "stuhlgang.pg.people", "PersonFactory"),
             ("webapp_sessions", "stuhlgang.pg.sessions", "SessionFactory"),
-            ("patients", "stuhlgang.pg.stuhlgang", "PatientFactory"),
-            ("patient_events", "stuhlgang.pg.stuhlgang", "PatientEventFactory"),
+            ("patients", "stuhlgang.pg.patients", "PatientFactory"),
+            ("patient_events", "stuhlgang.pg.patients", "PatientEventFactory"),
             ("patient_caretakers", None, None),
             ("provider_patient_links", None, None),
 
