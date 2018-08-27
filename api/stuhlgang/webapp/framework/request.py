@@ -40,4 +40,17 @@ class Request(request.Request):
 
     @property
     def is_JSON(self):
-        return self.CONTENT_TYPE and 'json' in self.CONTENT_TYPE.lower()
+
+        """
+        Fun fact: the fetch API wants stuff to be sent with text/plain.
+        So, we'll tolerate that as JSON as well.
+        """
+
+        if self.CONTENT_TYPE and 'json' in self.CONTENT_TYPE.lower():
+            return True
+
+        elif self.CONTENT_TYPE and "text/plain" in self.CONTENT_TYPE.lower():
+            return True
+
+
+

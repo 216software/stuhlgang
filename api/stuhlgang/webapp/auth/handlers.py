@@ -1,5 +1,6 @@
 # vim: set expandtab ts=4 sw=4 filetype=python:
 
+import datetime
 import json
 import logging
 import random
@@ -75,7 +76,7 @@ class VerifySessionUUID(Handler):
                 success=False,
                 message="Could not verify session"))
 
-class Authenticate(Handler):
+class AuthenticateWithEmailAndPassword(Handler):
 
     route_strings = set([
         "POST /api/authenticate",
@@ -120,15 +121,20 @@ class Authenticate(Handler):
                 session.session_uuid,
                 self.cw.app_secret)
 
+            log.debug(resp.headers)
+
             return resp
 
         else:
+
+            log.info("Failed login attempt: {0} / {1}".format(
+                email_address,
+                password))
 
             return Response.json(dict(
                 message="Sorry, couldn't authenticate!",
                 reply_timestamp=datetime.datetime.now(),
                 success=False))
-
 
 class EndSession(Handler):
 
@@ -162,3 +168,202 @@ class EndSession(Handler):
                 reply_timestamp=datetime.datetime.now(),
                 success=True,
                 session=updated_session))
+
+
+class StartSignup(Handler):
+
+    route_strings = set ([
+        "POST /api/signup",
+        "POST /api/sign-up",
+    ])
+
+    route = Handler.check_route_strings
+
+    required_json_keys = ["display_name", "email_address", "agreed_with_TOS"]
+
+    @Handler.require_json
+    def handle(self, req):
+
+        if not pg.people.Person.email_is_valid(req.json["email_address"]):
+
+            return Response.json(dict(
+                success=False,
+                reply_timestamp=datetime.datetime.now(),
+                message="Sorry, {email_address} is not a valid email!".format(**req.json)))
+
+        elif not pg.people.Person.email_address_is_new(
+            self.cw.get_pgconn(),
+            req.json["email_address"]):
+
+            return Response.json(dict(
+                success=False,
+                reply_timestamp=datetime.datetime.now(),
+                message="Sorry, Somebody else already registered "
+                    "email {email_address}!".format(**req.json)))
+
+        elif req.json["agreed_with_TOS"]:
+
+            inserted_person = pg.people.Person.insert(
+                self.cw.get_pgconn(),
+                req.json["display_name"],
+                req.json["email_address"],
+                datetime.datetime.now())
+
+            inserted_person.send_confirmation_code_via_email(
+                self.cw.make_smtp_connection())
+
+            return Response.json(dict(
+                success=True,
+                reply_timestamp=datetime.datetime.now(),
+                inserted_person=inserted_person,
+                message="Go check your email!"))
+
+        else:
+
+            return Response.json(dict(
+                success=False,
+                reply_timestamp=datetime.datetime.now(),
+                inserted_person=inserted_person,
+                message="Sorry, you must agree with the terms of service to use this application"))
+
+class ConfirmMembership(Handler):
+
+    route_strings = set([
+        "POST /api/confirm-email"
+    ])
+
+    route = Handler.check_route_strings
+
+    required_json_keys = ["email_address", "confirmation_code"]
+
+    @Handler.require_json
+    def handle(self, req):
+
+        try:
+
+            confirmed_person = pg.people.Person.confirm_email(
+                self.cw.get_pgconn(),
+                req.json["email_address"],
+                req.json["confirmation_code"])
+
+        except KeyError as ex:
+
+            return Response.json(dict(
+                success=False,
+
+                message=ex.args[0],
+
+                reply_timestamp=datetime.datetime.now()))
+
+        else:
+
+            return Response.json(dict(
+                confirmed_person=confirmed_person,
+                success=True,
+                message="You ({0}) are now confirmed!".format(confirmed_person.display_name),
+                reply_timestamp=datetime.datetime.now()))
+
+
+class OptionsHandler(Handler):
+
+    def route(self, req):
+
+        if req.REQUEST_METHOD == "OPTIONS":
+            return self.handle
+
+    def handle(self, req):
+
+        resp = Response(
+            "200 OK",
+            [
+
+                ('Access-Control-Allow-Origin', dict(req.wz_req.headers).get('Origin', '*')),
+                ('Access-Control-Allow-Credentials', 'true'),
+                ("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Engaged-Auth-Token"),
+            ],
+            [])
+
+        return resp
+
+class StartSessionWithConfirmCode(Handler):
+
+    route_strings = set([
+        "POST /api/start-session-with-confirmation-code"
+    ])
+
+    route = Handler.check_route_strings
+
+    @Handler.require_json
+    def handle(self, req):
+
+        email_address = req.json["email_address"].strip()
+        confirmation_code = req.json["confirmation_code"].strip()
+
+        session = None
+
+        session = pg.sessions.Session.maybe_start_new_session_after_checking_email_and_confirmation_code(
+            self.cw.get_pgconn(),
+            email_address,
+            confirmation_code,
+            datetime.timedelta(days=3))
+
+        if session:
+
+            person = pg.people.Person.by_person_uuid(
+                self.cw.get_pgconn(),
+                session.person_uuid)
+
+            log.info("{0} just logged in.".format(person.display_name))
+
+            resp = Response.json(dict(
+                reply_timestamp=datetime.datetime.now(),
+                message="Session created and will expire on {0}".format(
+                    session.expires),
+                success=True,
+                session=session,
+                person=person))
+
+            resp.set_session_cookie(
+                session.session_uuid,
+                self.cw.app_secret)
+
+            log.debug(resp.headers)
+
+            return resp
+
+        else:
+
+            log.info("Failed login attempt: {0} / {1}".format(
+                email_address,
+                confirmation_code))
+
+            return Response.json(dict(
+                message="Sorry, couldn't authenticate!",
+                reply_timestamp=datetime.datetime.now(),
+                success=False))
+
+class SendConfirmationCode(Handler):
+
+    route_strings = set(["POST /api/send-confirmation-code"])
+    route = Handler.check_route_strings
+
+    required_json_keys = ["email_address"]
+
+    @Handler.require_json
+    def handle(self, req):
+
+        person = pg.people.Person.by_email_address(
+            self.cw.get_pgconn(),
+            req.json["email_address"].strip())
+
+        if not person.confirmation_code:
+            person = person.reset_confirmation_code(self.cw.get_pgconn())
+
+        person.send_confirmation_code_via_email(
+            self.cw.make_smtp_connection())
+
+        return Response.json(dict(
+            message="Sent a confirmation code to {0}!".format(person.email_address),
+            reply_timestamp=datetime.datetime.now(),
+            success=True))
+

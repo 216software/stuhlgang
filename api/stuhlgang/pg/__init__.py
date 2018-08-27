@@ -8,3 +8,4 @@ class RelationWrapper(horsemeat.pg.RelationWrapper):
 
 from . import sessions
 from . import people
+from . import patients

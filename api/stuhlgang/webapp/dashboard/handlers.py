@@ -55,7 +55,7 @@ class HandlerCode(Handler):
 
     def handle(self, req):
 
-        handler_name = req.parsed_QS['handler_name'][0]
+        handler_name = req.wz_req.args['handler_name']
 
         matching_handler_classes = [h.__class__ for h
             in self.dispatcher.handlers

@@ -1,0 +1,27 @@
+{% extends 'emailtemplates/base.html' %}
+{% block main %}
+
+<p>
+<strong>
+{{ person.display_name }}: Welcome to Help Me 2 Poop!
+</strong>
+</p>
+
+<p>It looks like you just signed up for our system.  Great!
+</p>
+
+<p>
+Here is your confirmation code:
+</p>
+
+<p>
+<span style="font-size:24px; font-face: monospace; color: black;">
+{{ confirmation_code }}
+</span>
+</p>
+
+<p>Punch that into the mobile app and you will be confirmed!
+
+{% endblock main %}
+
+{# vim: set syntax=htmldjango: #}

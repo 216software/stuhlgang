@@ -1,7 +1,9 @@
 # vim: set expandtab ts=4 sw=4 filetype=python:
 
+import importlib
 import logging
 
+import jinja2
 import psycopg2.extras
 
 from horsemeat import configwrapper
@@ -21,15 +23,36 @@ class ConfigWrapper(configwrapper.ConfigWrapper):
 
     def register_composite_types(self, pgconn):
 
-        from stuhlgang.pg.people import PersonFactory
+        # Theoretically, a class-level decorator or metaclass applied to
+        # the Relation classes could generate the factory for the class
+        # and also add this stuff here.
 
-        psycopg2.extras.register_composite('people', pgconn,
-          factory=PersonFactory)
+        for database_table_name, module_path, factory_class_name in [
 
-        from stuhlgang.pg.sessions import SessionFactory
+            ("people", "stuhlgang.pg.people", "PersonFactory"),
+            ("webapp_sessions", "stuhlgang.pg.sessions", "SessionFactory"),
+            ("patients", "stuhlgang.pg.patients", "PatientFactory"),
+            ("patient_events", "stuhlgang.pg.patients", "PatientEventFactory"),
+            ("patient_caretakers", None, None),
+            ("provider_patient_links", None, None),
 
-        psycopg2.extras.register_composite('webapp_sessions', pgconn,
-          factory=SessionFactory)
+        ]:
+
+            if module_path and factory_class_name:
+
+                module = importlib.import_module(module_path)
+                factory_class = getattr(module, factory_class_name)
+
+                psycopg2.extras.register_composite(
+                    database_table_name,
+                    pgconn,
+                    factory=factory_class)
+
+            else:
+
+                psycopg2.extras.register_composite(
+                    database_table_name,
+                    pgconn)
 
         log.info('Just registered composite types in psycopg2')
 
@@ -41,6 +64,10 @@ class ConfigWrapper(configwrapper.ConfigWrapper):
         j = self.get_jinja2_environment()
 
         j.add_extension('jinja2.ext.do')
+
+        j.loader.mapping['emailtemplates'] = jinja2.PackageLoader(
+            'stuhlgang',
+            'emailtemplates')
 
     @classmethod
     def print_example_yaml(cls):

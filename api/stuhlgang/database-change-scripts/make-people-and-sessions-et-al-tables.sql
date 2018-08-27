@@ -52,6 +52,19 @@ create table people
     -- This will automatically get a random 4-digit code.
      confirmation_code text default to_char(random_between(1, 9999), 'fm0000'),
 
+    -- And this is when the confirmation code was last set.  Useful for
+    -- checking if something has been redeemed recently.
+    confirmation_code_set timestamptz default now(),
+
+    check (
+        (confirmation_code is not null and confirmation_code_set is not null)
+        or
+        confirmation_code is null),
+
+    -- I'm storing WHEN they agreed with the TOS.  A NULL value means
+    -- they haven't yet agreed.
+    agreed_with_TOS timestamptz,
+
     inserted timestamptz not null default now(),
     updated timestamptz
 
@@ -68,15 +81,12 @@ execute procedure set_updated_column();
 create table webapp_sessions
 (
     session_uuid uuid primary key default uuid_generate_v4(),
-    expires timestamptz not null default now() + interval '60 minutes',
+    expires timestamptz not null default now() + interval '1 year',
 
     person_uuid uuid
     references people (person_uuid)
     on delete cascade
     on update cascade,
-
-    news_message text,
-    redirect_to_url text,
 
     inserted timestamptz not null default now(),
     updated timestamptz
@@ -138,7 +148,6 @@ values
 ('registration'),
 ('forgot password')
 ;
-
 
 -- Put rows in here to send emails.
 create table email_message_queue

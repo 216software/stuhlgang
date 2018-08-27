@@ -1,9 +1,15 @@
 # vim: set expandtab ts=4 sw=4 filetype=python:
 
 import logging
+import re
 import textwrap
 
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 import psycopg2.extras
+
+from stuhlgang.pg import RelationWrapper
 
 log = logging.getLogger(__name__)
 
@@ -13,10 +19,12 @@ class PersonFactory(psycopg2.extras.CompositeCaster):
         d = dict(zip(self.attnames, values))
         return Person(**d)
 
-class Person(object):
+class Person(RelationWrapper):
 
     def __init__(self, person_uuid, email_address, salted_hashed_password,
-        person_status, display_name, confirmation_code, is_superuser, inserted, updated):
+        person_status, display_name, confirmation_code,
+        confirmation_code_set, is_superuser,
+        agreed_with_tos, inserted, updated):
 
         self.person_uuid = person_uuid
         self.email_address = email_address
@@ -25,6 +33,8 @@ class Person(object):
         self.display_name = display_name
         self.is_superuser = is_superuser
         self.confirmation_code = confirmation_code
+        self.confirmation_code_set = confirmation_code_set
+        self.agreed_with_tos = agreed_with_tos
         self.inserted = inserted
         self.updated = updated
 
@@ -81,15 +91,15 @@ class Person(object):
             return cursor.fetchone().p
 
     @classmethod
-    def insert(cls, pgconn, display_name, email_address, password):
+    def insert(cls, pgconn, display_name, email_address, agreed_with_TOS):
 
         cursor = pgconn.cursor()
 
         cursor.execute(textwrap.dedent("""
             insert into people
-            (display_name, email_address, salted_hashed_password)
+            (display_name, email_address, agreed_with_TOS)
             values
-            (%(display_name)s, %(email_address)s, crypt(%(password)s, gen_salt('bf')))
+            (%(display_name)s, %(email_address)s, %(agreed_with_TOS)s)
             returning people.*::people as inserted_person
             """), locals())
 
@@ -97,30 +107,22 @@ class Person(object):
 
     def send_confirmation_code_via_email(self, smtpconn):
 
-        if self.person_status != "started registration":
+        msg = MIMEMultipart('alternative')
 
-            raise ValueError("{0} has status {1}!".format(
-                self,
-                self.person_status))
+        msg['Subject'] = "Confirm your Help Me 2 Poop membership!"
+        msg['From'] = "support@helpme2poop.com"
+        msg['To'] = self.email_address
 
-        else:
+        msg.attach(self.write_confirmation_email())
 
-            msg = MIMEMultipart('alternative')
+        smtpconn.sendmail(
+            "support@helpme2poop.com",
+            [self.email_address],
+            msg.as_string())
 
-            msg['Subject'] = "Confirm your Circuit Caddie Signup!"
-            msg['From'] = "support@circuitapp.com"
-            msg['To'] = self.email_address
-
-            msg.attach(self.write_confirmation_email())
-
-            smtpconn.sendmail(
-                "support@circuitapp.com",
-                [self.email_address],
-                msg.as_string())
-
-            log.info(
-                "Just sent confirmation email to {0}.".format(
-                    self.email_address))
+        log.info(
+            "Just sent confirmation email to {0}.".format(
+                self.email_address))
 
     def write_confirmation_email(self):
 
@@ -154,7 +156,9 @@ class Person(object):
 
         cursor.execute(textwrap.dedent("""
             update people
-            set confirmation_code = to_char(random_between(1, 9999), 'fm0000')
+            set confirmation_code = to_char(random_between(1, 9999),
+            'fm0000'),
+            confirmation_code_set = current_timestamp
             where person_uuid = %(person_uuid)s
             returning people.*::people as updated_person
             """), dict(person_uuid=self.person_uuid))
@@ -171,7 +175,12 @@ class Person(object):
 
         cursor.execute(textwrap.dedent("""
             update people
-            set confirmation_code = %(new_code)s
+            set confirmation_code = %(new_code)s,
+
+            confirmation_code_set = case when %(new_code)s is null then
+            null else current_timestamp
+            end
+
             where person_uuid = %(person_uuid)s
             returning people.*::people as updated_person
             """), dict(person_uuid=self.person_uuid, new_code=new_code))
@@ -181,3 +190,68 @@ class Person(object):
 
         else:
             raise KeyError("Sorry, no person {0} found!".format(self.person_uuid))
+
+    @staticmethod
+    def email_address_is_new(pgconn, email_address):
+
+        try:
+
+            Person.by_email_address(pgconn, email_address)
+
+        except KeyError as ex:
+            return True
+
+        else:
+            return False
+
+    @staticmethod
+    def email_is_valid(email_address):
+
+        return bool(re.match(r".+@.+\..+", email_address))
+
+
+    def set_password(self, pgconn, new_password):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            update people
+            set salted_hashed_password = crypt(%(new_password)s, gen_salt('bf'))
+            where person_uuid = %(person_uuid)s
+            returning people.*::people as updated_person
+            """), dict(
+                person_uuid=self.person_uuid,
+                new_password=new_password))
+
+        if cursor.rowcount:
+            return cursor.fetchone().updated_person
+
+        else:
+            raise KeyError("Sorry, no person {0} found!".format(self.person_uuid))
+
+    @classmethod
+    def confirm_email(cls, pgconn, email_address, confirmation_code):
+
+        """
+        This means to mark this email address as confirmed.
+        """
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            update people
+            set person_status = 'confirmed',
+            confirmation_code = NULL
+            where email_address = %(email_address)s
+            and confirmation_code = %(confirmation_code)s
+            returning people.*::people as confirmed_person
+            """), locals())
+
+        if cursor.rowcount:
+            return cursor.fetchone().confirmed_person
+
+        else:
+            raise KeyError("Sorry, {0} doesn't match the confirmation code for email {1} " "!".format(
+                confirmation_code,
+                email_address))
+
