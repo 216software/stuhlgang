@@ -1,1 +1,11 @@
-<h1>Dashboard</h1>
+<div data-bind="!patients.length">
+    <h3>No patients yet</h3>
+</div>
+
+<div class="list-group list-group-flush">
+    <a
+        class="list-group-item list-group-item-action"
+        data-bind="foreach: patients"
+    >
+    </a>
+</div>

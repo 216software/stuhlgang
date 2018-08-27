@@ -84,6 +84,16 @@
                         with: loginViewModel,
                     }"
                 ></div>
+
+                <div data-bind="
+                    page: {
+                        id: 'getcode',
+                        title: 'Stuhlgang: Get Code',
+                        source: 'templates/getcode.html',
+                        with: getCodeViewModel,
+                        afterShow: getCodeViewModel.initialize,
+                    }"
+                ></div>
             </div><!-- closes container -->
         </div><!-- closes class=app -->
 

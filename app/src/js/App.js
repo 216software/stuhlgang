@@ -1,4 +1,5 @@
 import Login from './viewmodels/Login';
+import GetCode from './viewmodels/GetCode';
 import Dashboard from './viewmodels/Dashboard';
 import store from './services/store';
 import { verify } from './services/auth';
@@ -11,6 +12,7 @@ class App {
   constructor () {
     this.loginViewModel = new Login();
     this.dashboardViewModel = new Dashboard();
+    this.getCodeViewModel = new GetCode();
 
     this.session = store.session;
     this.error = store.error;

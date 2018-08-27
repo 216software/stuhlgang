@@ -8,7 +8,7 @@
         border-bottom-left-radius: 0px;
     }
 
-    input[type=password] {
+    input[type=text] {
         margin-bottom: 10px;
         border-top-right-radius: 0px;
         border-top-left-radius: 0px;
@@ -27,6 +27,10 @@
     }
 
     button {
+        margin-top: 40px;
+    }
+
+    .links {
         margin-top: 40px;
     }
 }

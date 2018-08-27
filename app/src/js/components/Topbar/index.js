@@ -16,7 +16,7 @@ class Topbar {
       },
     ];
 
-    this.session = store.session;
+    this.loggedIn = store.loggedIn;
   }
 
   logout = async () => {

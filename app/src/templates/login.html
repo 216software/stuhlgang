@@ -14,12 +14,12 @@
             />
 
             <input
-                type="password"
+                type="text"
                 class="form-control"
-                name="password"
-                placeholder="Password"
+                name="code"
+                placeholder="Confirmation Code"
                 required
-                data-bind="value: password"
+                data-bind="value: code"
             />
 
             <button
@@ -29,6 +29,19 @@
             >
                 Sign in
             </button>
+
+            <div class="links">
+                <p>
+                    <a data-bind="page-href: '/getcode'">
+                        Get a confirmation code
+                    </a>
+                </p>
+                <p>
+                    <a data-bind="page-href: '/signup'">
+                        Sign up for an account
+                    </a>
+                </p>
+            </diV>
         </div>
     </form>
 </div>

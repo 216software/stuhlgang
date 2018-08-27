@@ -7,7 +7,7 @@ class Login extends BasePage {
   constructor () {
     super();
     this.email = ko.observable('');
-    this.password = ko.observable('');
+    this.code = ko.observable('');
   }
 
   afterShow = () => {
@@ -19,7 +19,7 @@ class Login extends BasePage {
   onSubmit = async () => {
     const response = await login({
       email: this.email(),
-      password: this.password(),
+      code: this.code(),
     });
 
     if (response.success) {

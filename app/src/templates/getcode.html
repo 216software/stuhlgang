@@ -1,0 +1,30 @@
+<div class="page getcode-page">
+    <form id="GetCode_Form" class="form-getcode">
+        <div class="text-center">
+            <h1 class="h2 font-weight-normal">Get Confirmation Code</h1>
+
+            <p>
+                Enter your email address and we will send you a confirmation
+                code.
+            </p>
+
+            <input
+                type="email"
+                class="form-control"
+                name="email"
+                placeholder="Email Address"
+                autofocus
+                required
+                data-bind="value: email"
+            />
+
+            <button
+                class="btn btn-lg btn-primary btn-block"
+                type="submit"
+                data-bind="click: onSubmit"
+            >
+                Get Code
+            </button>
+        </div>
+    </form>
+</div>

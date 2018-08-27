@@ -1,0 +1,23 @@
+.getcode-page {
+    padding: 40px 0;
+
+    input[type=email] {
+        margin-top: 30px;
+    }
+
+    .form-control {
+        height: auto;
+        padding: 10px;
+        font-size: 15px;
+    };
+
+    .form-getcode {
+        padding: 30px 15px;
+        max-width: 330px;
+        margin: 0 auto;
+    }
+
+    button {
+        margin-top: 40px;
+    }
+}
