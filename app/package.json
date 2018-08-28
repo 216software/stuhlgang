@@ -13,7 +13,8 @@
     "emulate-android": "cordova emulate android -- --live-reload",
     "emulate-ios": "cordova emulate ios -- --live-reload",
     "webpack": "webpack",
-    "cordova": "cordova"
+    "cordova": "cordova",
+    "matt": "webpack --env.NODE_ENV=local && cordova prepare browser"
   },
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",

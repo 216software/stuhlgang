@@ -6,7 +6,9 @@ class Dashboard extends BasePage {
   constructor () {
     super();
 
-    this.patients = ko.observableArray([
+    console.debug("Inside this goofy constructor...");
+
+    this.patients = ko.observableArray(
 
         ko.utils.arrayMap(
 
@@ -29,15 +31,15 @@ class Dashboard extends BasePage {
                 ],
                 "reply_timestamp": "2018-08-28T11:56:57.773839",
                 "success": true
-            },
+            }["patients"],
 
             function (x) {
+                console.debug(x);
                 x.rootvm = "EVAN THIS IS WHERE I PASS A REFERENCE TO THE TOP VIEW MODEL";
                 return new Patient(x);
-
             })
 
-    ]);
+    );
 
     /*
       {
@@ -53,7 +55,7 @@ class Dashboard extends BasePage {
     */
 
     // This is a job for the Patient!
-    this.patientUrl = ({ id }) => ko.computed(() => `/patients/${id}`, this);
+    this.patientUrl = ({ patient_number }) => ko.computed(() => `/patients/${patient_number()}`, this);
 
   }
 
