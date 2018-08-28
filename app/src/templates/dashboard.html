@@ -12,4 +12,11 @@
     >
         <span data-bind="text: name" />
     </a>
+
+    <a data-bind="page-href: my_url, text: display_name"></a>
+
+    <!-- actually, to keep stuff even simpler / more obvious / quicker
+        to debug , I might spell out the link -->
+    <a data-bind="page-href: '/patients/' + patient_number(), text: display_name"></a>
+
 </div>
