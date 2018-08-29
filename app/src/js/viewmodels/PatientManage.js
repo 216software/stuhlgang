@@ -20,6 +20,12 @@ class PatientManage extends BasePage {
     const patient = this.patients().find(p => p.patientNumber() === Number(this.id()));
     this.patient(patient);
   };
+
+  handleDelete = async () => {
+    if (confirm('Are you sure you want to delete this patient?')) {
+      console.log('delete confirmed');
+    }
+  };
 }
 
 export default PatientManage;

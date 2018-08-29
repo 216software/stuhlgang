@@ -1,5 +1,11 @@
 <div class="page patient-manage-page">
-    <h3>Manage Patient</h3>
+    <a
+        class="btn btn-light btn-lg btn-block"
+        data-bind="page-href: '/patient'"
+    >
+        <i class="fas fa-arrow-left"></i>
+        Back to patients
+    </a>
 
     <div class="card" data-bind="with: patient">
         <div class="card-body">
@@ -7,5 +13,13 @@
             <p class="card-text" data-bind="text: extraNotes"></p>
         </div>
     </div>
+
+    <button
+        class="btn btn-danger btn-lg btn-block"
+        data-bind="click: handleDelete"
+    >
+        <i class="fas fa-trash"></i>
+        Delete
+    </button>
 </div>
 
