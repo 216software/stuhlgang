@@ -1,0 +1,30 @@
+<div data-bind="
+     page: {
+        id: 'start',
+        title: 'Stuhlgang: Patients',
+        source: 'templates/patient_dashboard.html',
+        with: patientDashboardViewModel,
+        afterShow: patientDashboardViewModel.initialize,
+     }"
+></div>
+
+<div data-bind="
+    page: {
+        id: 'create',
+        title: 'Stuhlgang: Create Patient',
+        source: 'templates/patient_create.html',
+        with: patientCreateViewModel,
+        afterShow: patientCreateViewModel.initialize,
+    }"
+></div>
+
+<div data-bind="
+    page: {
+        id: 'manage',
+        params: ['id'],
+        title: 'Stuhlgang: Manage Patient',
+        source: 'templates/patient_manage.html',
+        with: patientManageViewModel,
+        afterShow: patientManageViewModel.initialize,
+    }"
+></div>

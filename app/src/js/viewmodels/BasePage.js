@@ -3,9 +3,11 @@ import store from '../services/store';
 class BasePage {
   constructor () {
     this.store = store;
+
+    this.initialize = this.initialize.bind(this);
   }
 
-  initialize = async () => {
+  initialize () {
     if (this.afterShow) this.afterShow();
   }
 }

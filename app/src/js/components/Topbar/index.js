@@ -1,18 +1,16 @@
 import ko from 'knockout';
 import template from './template.html';
 import { removeItem } from '../../services/nativeStorage';
-import * as auth from '../../services/auth';
+import * as auth from '../../services/api/auth';
 import store from '../../services/store';
 
 class Topbar {
   constructor () {
-    this.activeNav = ko.observable('home');
-
     this.pages = [
       {
-        id: 'dashboard',
-        title: 'Home',
-        url: '/dashboard',
+        id: 'patients',
+        title: 'Patients',
+        url: '/patient',
       },
     ];
 

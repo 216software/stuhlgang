@@ -1,7 +1,7 @@
 import ko from 'knockout';
 import BasePage from './BasePage';
 import { setItem } from '../services/nativeStorage';
-import { login } from '../services/auth';
+import { login } from '../services/api/auth';
 
 class Login extends BasePage {
   constructor () {
@@ -12,7 +12,7 @@ class Login extends BasePage {
 
   afterShow = () => {
     if (this.store.loggedIn()) {
-      pager.navigate('dashboard');
+      pager.navigate('patient');
     }
   }
 
@@ -35,7 +35,7 @@ class Login extends BasePage {
         this.store.info('');
       }, 3000);
 
-      pager.navigate('dashboard');
+      pager.navigate('patient');
     } else {
       this.store.info('');
       this.store.error(response.message);
