@@ -1,7 +1,7 @@
 import ko from 'knockout';
 import BasePage from './BasePage';
 import store from '../services/store';
-import { requestCode } from '../services/auth';
+import { requestCode } from '../services/api/auth';
 
 class GetCode extends BasePage {
   constructor () {
@@ -11,7 +11,7 @@ class GetCode extends BasePage {
 
   afterShow = () => {
     if (this.store.loggedIn()) {
-      pager.navigate('dashboard');
+      pager.navigate('patient');
     }
   }
 

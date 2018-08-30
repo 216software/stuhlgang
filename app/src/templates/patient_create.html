@@ -1,0 +1,56 @@
+<div class="page patient-create-page">
+    <form>
+        <legend>Create a patient</legend>
+
+        <div class="form-group">
+            <label for="DisplayNameInput">Full Name</label>
+            <input
+                id="DisplayNameInput"
+                type="text"
+                class="form-control"
+                name="displayName"
+                placeholder="Full Name"
+                required
+                autofocus
+                data-bind="value: displayName"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="DateOfBirthInput">Date of Birth</label>
+            <input
+                id="DateOfBirthInput"
+                type="date"
+                class="form-control"
+                name="dob"
+                data-bind="value: dob"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="ExtraNotesInput">Extra Notes</label>
+            <textarea
+                id="ExtraNotesInput"
+                class="form-control"
+                name="extraNotes"
+                placeholder="Extra notes..."
+                data-bind="value: extraNotes"
+            ></textarea>
+        </div>
+
+        <div class="form-group">
+            <button
+                class="btn btn-primary btn-lg btn-block"
+                data-bind="click: createPatient"
+            >
+                Save new patient
+            </button>
+            <button
+                class="btn btn-default btn-lg btn-block"
+                data-bind="click: cancel"
+            >
+                Cancel
+            </button>
+        </div>
+    </form>
+</div>

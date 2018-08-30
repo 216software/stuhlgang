@@ -1,8 +1,8 @@
 import Login from './viewmodels/Login';
 import GetCode from './viewmodels/GetCode';
-import Dashboard from './viewmodels/Dashboard';
+import Patient from './viewmodels/Patient';
 import store from './services/store';
-import { verify } from './services/auth';
+import { verify } from './services/api/auth';
 import { getItem } from './services/nativeStorage';
 import './components';
 
@@ -11,8 +11,8 @@ global.store = store;
 class App {
   constructor () {
     this.loginViewModel = new Login();
-    this.dashboardViewModel = new Dashboard();
     this.getCodeViewModel = new GetCode();
+    this.patientViewModel = new Patient();
 
     this.session = store.session;
     this.error = store.error;

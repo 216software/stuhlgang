@@ -67,16 +67,6 @@
 
                 <div data-bind="
                     page: {
-                        id: 'dashboard',
-                        title: 'Stuhlgang: Dashboard',
-                        source: 'templates/dashboard.html',
-                        with: dashboardViewModel,
-                        afterShow: dashboardViewModel.initialize
-                    }"
-                ></div>
-
-                <div data-bind="
-                    page: {
                         id: 'login',
                         title: 'Stuhlgang: Login',
                         source: 'templates/login.html',
@@ -94,6 +84,17 @@
                         afterShow: getCodeViewModel.initialize,
                     }"
                 ></div>
+
+                <div data-bind="
+                    page: {
+                        id: 'patient',
+                        title: 'Stuhlgang: Patient',
+                        source: 'templates/patient.html',
+                        with: patientViewModel,
+                        afterShow: patientViewModel.initialize,
+                    }"
+                ></div>
+
             </div><!-- closes container -->
         </div><!-- closes class=app -->
 

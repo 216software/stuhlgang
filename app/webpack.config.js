@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HardSourcePlugin = require('hard-source-webpack-plugin');
 
 // eslint-disable-next-line
 module.exports = (env) => {
@@ -82,6 +83,9 @@ module.exports = (env) => {
 
     plugins: [
       new webpack.NamedModulesPlugin(),
+
+      // Try to speed up build times
+      new HardSourcePlugin(),
 
       // ensure that globally accessed variables in 3rd party libraries are
       // defined (knockout, pager, bootstrap)

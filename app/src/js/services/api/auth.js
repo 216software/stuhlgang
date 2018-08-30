@@ -1,5 +1,5 @@
-import store from './store';
-import request from './request';
+import store from '../store';
+import request from '../request';
 
 const login = ({ email, code }) => request('start-session-with-confirmation-code', {
   method: 'POST',
