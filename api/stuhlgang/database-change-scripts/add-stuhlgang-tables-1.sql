@@ -28,7 +28,8 @@ create table provider_patient_links (
     provider uuid not null references people (person_uuid)
     on delete cascade,
 
-    patient_number integer not null references patients (patient_number),
+    patient_number integer not null references patients (patient_number)
+    on delete cascade,
 
     primary key (provider, patient_number),
 
@@ -51,7 +52,8 @@ create table patient_caretakers (
     caretaker uuid not null references people (person_uuid)
     on delete cascade,
 
-    patient_number integer not null references patients (patient_number),
+    patient_number integer not null references patients (patient_number)
+    on delete cascade,
 
     primary key (caretaker, patient_number),
 

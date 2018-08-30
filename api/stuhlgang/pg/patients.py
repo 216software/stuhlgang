@@ -141,6 +141,24 @@ class Patient(RelationWrapper):
         if cursor.rowcount:
             return cursor.fetchone().patient_caretaker_link
 
+    @staticmethod
+    def delete_patient(pgconn, patient_number):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            delete from patients
+            where patient_number = %(patient_number)s
+            returning patients.*::patients as deleted_patient
+            """), locals())
+
+        if cursor.rowcount:
+            return cursor.fetchone().deleted_patient
+
+        else:
+            raise KeyError("Sorry, not patient {0} found!".format(patient_number))
+
+
 class PatientEventFactory(psycopg2.extras.CompositeCaster):
 
     def make(self, values):
@@ -160,6 +178,23 @@ class PatientEvent(RelationWrapper):
         self.extra_data = extra_data
         self.inserted = inserted
         self.updated = updated
+
+    @classmethod
+    def by_patient_event_number(cls, pgconn, patient_event_number):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            select patient_events.*::patient_events as pe
+            from patient_events
+            where patient_event_number = %(patient_event_number)s
+            """), locals())
+
+        if cursor.rowcount:
+            return cursor.fetchone().pe
+
+        else:
+            raise KeyError("Sorry, no patient event {0} found!".format(patient_event_number))
 
     @classmethod
     def by_patient_number(cls, pgconn, patient_number, offset, limit):
@@ -208,3 +243,20 @@ class PatientEvent(RelationWrapper):
             """), locals())
 
         return cursor.fetchone().count
+
+    @staticmethod
+    def delete_patient_event(pgconn, patient_event_number):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            delete from patient_events
+            where patient_event_number = %(patient_event_number)s
+            returning patient_events.*::patient_events as deleted_patient_event
+            """), locals())
+
+        if cursor.rowcount:
+            return cursor.fetchone().deleted_patient_event
+
+        else:
+            raise KeyError("Sorry, not patient event {0} found!".format(patient_event_number))
