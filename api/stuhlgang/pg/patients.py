@@ -51,6 +51,26 @@ class Patient(RelationWrapper):
             yield row.patient
 
     @classmethod
+    def by_patient_number(cls, pgconn, patient_number):
+
+        cursor = pgconn.cursor()
+
+        cursor.execute(textwrap.dedent("""
+            select patients.*::patients as patient
+            from patients
+            where patient_number = %(patient_number)s
+            """), locals())
+
+        if cursor.rowcount:
+
+            return cursor.fetchone().patient
+
+        else:
+
+            raise KeyError("Sorry, no patient {0} found!".format(patient_number))
+
+
+    @classmethod
     def patients_for_hcprovider(cls, pgconn, provider_uuid, offset, limit):
 
         cursor = pgconn.cursor()
