@@ -168,7 +168,7 @@ class PatientEvents(Handler):
         else:
 
             offset = int(req.wz_req.args.get("offset", 0))
-            limit = int(req.wz_req.args.get("offset", 10))
+            limit = int(req.wz_req.args.get("limit", 10))
 
             patient_events = list(pg.patients.PatientEvent.by_patient_number(
                 self.cw.get_pgconn(),
@@ -188,5 +188,6 @@ class PatientEvents(Handler):
                 reply_timestamp=datetime.datetime.now(),
                 offset=offset,
                 limit=limit,
-                patient_events=patient_events))
+                patient_events=patient_events,
+                total_event_count=total_event_count))
 

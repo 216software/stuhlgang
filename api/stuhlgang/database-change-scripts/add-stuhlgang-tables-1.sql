@@ -10,7 +10,7 @@ create table patients
     -- because I don't care enough about making a stupid "patient zero"
     -- joke to do all that work.
     patient_number serial primary key,
-    display_name citext,
+    display_name citext not null,
     extra_notes text,
     extra_data json,
     inserted timestamptz not null default now(),
