@@ -195,6 +195,7 @@ class DeletePatient(Handler):
 
     route_strings = set([
         "POST /api/delete-patient",
+        "DELETE /api/patient",
     ])
 
     required_json_keys = [
@@ -235,6 +236,7 @@ class DeletePatientEvent(Handler):
 
     route_strings = set([
         "POST /api/delete-patient-event",
+        "DELETE /api/patient-event",
     ])
 
     route = Handler.check_route_strings
