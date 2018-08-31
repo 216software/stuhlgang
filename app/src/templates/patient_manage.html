@@ -9,10 +9,59 @@
 
     <div class="card" data-bind="with: patient">
         <div class="card-body">
-            <h5 class="card-title" data-bind="text: displayName"></h5>
-            <p class="card-text" data-bind="text: extraNotes"></p>
+            <h5 class="card-title" data-bind="text: $data.displayName"></h5>
+            <p class="card-text" data-bind="text: $data.extraNotes"></p>
         </div>
     </div>
+
+    <h5>Events</h5>
+    <div class="list-group" data-bind="foreach: events">
+        <a
+            class="list-group-item list-group-item-action"
+            data-bind="
+                page-href: {
+                    path: '/patient/event',
+                    params: { eventId: $data.patientEventNumber },
+                }
+            "
+        >
+            <h5 data-bind="text: $data.prettyTimestamp"></h5>
+            <p data-bind="text: $data.extraNotes"></p>
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <button
+                class="btn btn-outline-primary btn-lg btn-block"
+                data-bind="click: prevResults, attr: { disabled: !canGoPrev() }"
+            >
+                Previous
+            </button>
+        </div>
+        <div class="col-6">
+            <button
+                class="btn btn-outline-primary btn-lg btn-block"
+                data-bind="click: nextResults, attr: { disabled: !canGoNext() }"
+            >
+                Next
+            </button>
+        </div>
+    </div>
+
+    <!-- ko with: patient -->
+    <a
+        class="btn btn-primary btn-lg btn-block"
+        data-bind="
+            page-href: {
+                path: '/patient/new_event',
+                params: { id: $data.patientNumber }
+            }"
+    >
+        <i class="fas fa-plus"></i>
+        Add a new event
+    </a>
+    <!-- /ko -->
 
     <button
         class="btn btn-danger btn-lg btn-block"
@@ -22,4 +71,3 @@
         Delete
     </button>
 </div>
-

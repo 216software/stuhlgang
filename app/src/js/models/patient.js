@@ -13,6 +13,7 @@ class Patient {
     this.extraData = ko.observable(extraData);
 
     this.manageUrl = ko.computed(() => `/patient/manage?id=${this.patientNumber()}`);
+    this.newEventUrl = ko.computed(() => `/patient/new_event?id=${this.patientNumber()}`);
   }
 }
 

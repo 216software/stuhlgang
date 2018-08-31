@@ -1,0 +1,59 @@
+<div class="page patient-new-event-page">
+    <div class="text-center" data-bind="with: patient">
+        <h3>New Event For</h3>
+        <h5 data-bind="text: $data.displayName"></h5>
+    </div>
+
+    <form>
+        <legend>Event details</legend>
+        <div class="form-group">
+            <label for="DateInput">Date</label>
+            <input
+                id="DateInput"
+                type="date"
+                name="date"
+                class="form-control"
+                data-bind="value: date"
+            />
+        </div>
+        <div class="form-group">
+            <label for="TimeInut">Time</label>
+            <input
+                id="TimeInput"
+                type="time"
+                name="time"
+                class="form-control"
+                data-bind="value: time"
+            />
+        </div>
+        <div class="form-group">
+            <label for="NotesInput">Notes</label>
+            <input
+                id="NotesInput"
+                type="text"
+                name="notes"
+                class="form-control"
+                placeholder="Notes"
+                data-bind="value: notes"
+            />
+        </div>
+        <div class="form-group">
+            <button
+                class="btn btn-primary btn-lg btn-block"
+                data-bind="click: saveEvent"
+            >
+                <i class="fas fa-check"></i>
+                Save Event
+            </button>
+            <a
+                class="btn btn-light btn-lg btn-block"
+                data-bind="page-href: {
+                    path: '/patient/manage',
+                    params: { id: id },
+                }"
+            >
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>

@@ -21,9 +21,7 @@ class PatientCreate extends BasePage {
     const response = await createPatient({
       display_name: this.displayName(),
       extra_notes: this.extraNotes(),
-      extra_data: JSON.stringify({
-        dob: this.dob(),
-      }),
+      extra_data: { dob: this.dob() },
     });
 
     if (response.success) {

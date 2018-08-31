@@ -6,4 +6,12 @@
     .card {
         margin-bottom: 30px;
     }
+
+    .list-group {
+        margin-bottom: 30px;
+
+        .list-group-item p {
+            margin-bottom: 0;
+        }
+    }
 }

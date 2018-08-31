@@ -14,7 +14,16 @@ const createPatient = patient => request('add-patient-for-caretaker', {
   }),
 });
 
+const deletePatient = patientNumber => request('delete-patient', {
+  method: 'POST',
+  body: JSON.stringify({
+    patient_number: patientNumber,
+    session_uuid: store.session(),
+  }),
+});
+
 export {
   fetchPatientCollection,
   createPatient,
+  deletePatient,
 };

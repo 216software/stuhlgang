@@ -28,3 +28,26 @@
         afterShow: patientManageViewModel.initialize,
     }"
 ></div>
+
+<div data-bind="
+    page: {
+        id: 'new_event',
+        params: ['id'],
+        title: 'Stuhlgang: New Event',
+        source: 'templates/patient_new_event.html',
+        with: patientNewEventViewModel,
+        afterShow: patientNewEventViewModel.initialize,
+        beforeHide: patientNewEventViewModel.beforeHide,
+    }"
+></div>
+
+<div data-bind="
+    page: {
+        id: 'event',
+        params: ['eventId'],
+        title: 'Stuhlgang: Event',
+        source: 'templates/patient_event.html',
+        with: patientEventViewModel,
+        afterShow: patientEventViewModel.initialize,
+    }"
+></div>

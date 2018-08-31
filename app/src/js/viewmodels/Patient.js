@@ -2,6 +2,8 @@ import ko from 'knockout';
 import PatientDashboard from './PatientDashboard';
 import PatientCreate from './PatientCreate';
 import PatientManage from './PatientManage';
+import PatientEvent from './PatientEvent';
+import PatientNewEvent from './PatientNewEvent';
 import store from '../services/store';
 import { fetchPatientCollection } from '../services/api/patient';
 import PatientModel from '../models/patient';
@@ -11,6 +13,7 @@ const getModelsFromResults = patients => patients.map(data => new PatientModel(d
 class Patient {
   constructor () {
     this.patients = ko.observableArray([]);
+    this.events = ko.observableArray([]);
 
     this.patientDashboardViewModel = new PatientDashboard({
       patients: this.patients,
@@ -24,6 +27,17 @@ class Patient {
 
     this.patientManageViewModel = new PatientManage({
       patients: this.patients,
+      events: this.events,
+      parent: this,
+    });
+
+    this.patientNewEventViewModel = new PatientNewEvent({
+      patients: this.patients,
+      parent: this,
+    });
+
+    this.patientEventViewModel = new PatientEvent({
+      events: this.events,
       parent: this,
     });
   }
