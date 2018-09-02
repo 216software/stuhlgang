@@ -1,0 +1,33 @@
+<div class="page manage-notification-page">
+    <a
+        class="btn btn-light btn-lg btn-block"
+        data-bind="
+            page-href: {
+                path: '/patient/manage',
+                params: { id: patientNumber },
+            }
+        "
+    >
+        <i class="fas fa-arrow-left"></i>
+        Back to patient
+    </a>
+
+    <div class="text-center">
+        <h3>Manage Notification</h3>
+    </div>
+
+    <div class="card" data-bind="with: notification">
+        <div class="card-body">
+            <h5 class="card-title">Notification</h5>
+            <p class="card-text" data-bind="text: $data.prettyTime"></p>
+        </div>
+    </div>
+
+    <button
+        class="btn btn-primary btn-lg btn-block"
+        data-bind="click: deleteNotification"
+    >
+        <i class="fas fa-trash"></i>
+        Delete Notification
+    </button>
+</div>

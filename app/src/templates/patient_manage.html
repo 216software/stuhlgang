@@ -63,6 +63,40 @@
     </a>
     <!-- /ko -->
 
+    <h5>Notifications</h5>
+    <div class="list-group" data-bind="foreach: notifications">
+        <a
+            class="list-group-item list-group-item-action"
+            data-bind="
+                page-href: {
+                    path: '/patient/managenotification',
+                    params: {
+                        id: $data.id,
+                        patientNumber: $parent.id,
+                    },
+                }
+            "
+        >
+            <p data-bind="text: $data.prettyTime"></p>
+        </a>
+    </div>
+
+    <!-- ko with: patient -->
+    <a
+        class="btn btn-primary btn-lg btn-block"
+        data-bind="
+            page-href: {
+                path: '/patient/createnotification',
+                params: {
+                    id: $data.patientNumber,
+                },
+            }
+        "
+    >
+        Create notification
+    </a>
+    <!-- /ko -->
+
     <button
         class="btn btn-danger btn-lg btn-block"
         data-bind="click: handleDelete"

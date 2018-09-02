@@ -45,6 +45,23 @@ const app = {
 
     ko.applyBindings(appViewModel);
     appViewModel.initialize();
+
+    /*
+    const m = moment().add(1, 'minute');
+
+    cordova.plugins.notification.local.schedule({
+      id: 1,
+      title: 'My first notification',
+      text: 'Thats pretty easy...',
+      foreground: true,
+      trigger: {
+        every: {
+          hour: m.get('hours'),
+          minute: m.get('minutes'),
+        },
+      },
+    });
+    */
   },
 };
 

@@ -51,3 +51,25 @@
         afterShow: patientEventViewModel.initialize,
     }"
 ></div>
+
+<div data-bind="
+    page: {
+        id: 'createnotification',
+        params: ['id'],
+        title: 'Stuhlgang: Create notification',
+        source: 'templates/create_notification.html',
+        with: createNotificationViewModel,
+        afterShow: createNotificationViewModel.initialize,
+    }"
+></div>
+
+<div data-bind="
+    page: {
+        id: 'managenotification',
+        params: ['patientNumber', 'id'],
+        title: 'Stuhlgang: Manage notification',
+        source: 'templates/manage_notification.html',
+        with: manageNotificationViewModel,
+        afterShow: manageNotificationViewModel.initialize,
+    }"
+></div>

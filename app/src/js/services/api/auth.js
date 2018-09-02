@@ -28,9 +28,23 @@ const requestCode = ({ email }) => request('send-confirmation-code', {
   }),
 });
 
+const signup = ({
+  displayName,
+  email,
+  tos,
+}) => request('signup', {
+  method: 'POST',
+  data: JSON.stringify({
+    display_name: displayName,
+    email_address: email,
+    agreed_with_TOS: tos,
+  }),
+});
+
 export {
   login,
   logout,
   verify,
   requestCode,
+  signup,
 };

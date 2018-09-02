@@ -12,11 +12,13 @@ class PatientManage extends BasePage {
     patients,
     events,
     parent,
+    notifications,
   }) {
     super();
     this.patients = patients;
     this.parent = parent;
     this.events = events;
+    this.notifications = notifications;
 
     // this will be set by pagerjs
     this.id = ko.observable(null);

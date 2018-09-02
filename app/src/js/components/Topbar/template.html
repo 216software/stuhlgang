@@ -14,22 +14,24 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul
-            class="navbar-nav mr-auto"
-            data-bind="foreach: pages"
-        >
-            <li
-                class="nav-item"
-                data-bind="css: { active: pager.getActivePage().getCurrentId() === id}"
+        <div data-bind="if: loggedIn">
+            <ul
+                class="navbar-nav mr-auto"
+                data-bind="foreach: pages"
             >
-                <a
-                    class="nav-link"
-                    data-bind="
-                        page-href: url,
-                        text: title"
-                ></a>
-            </li>
-        </ul>
+                <li
+                    class="nav-item"
+                    data-bind="css: { active: pager.getActivePage().getCurrentId() === id}"
+                >
+                    <a
+                        class="nav-link"
+                        data-bind="
+                            page-href: url,
+                            text: title"
+                    ></a>
+                </li>
+            </ul>
+        </div>
         <div data-bind="if: loggedIn">
             <button
                 class="btn btn-link"
@@ -40,6 +42,17 @@
                 <i class="fas fa-sign-out-alt"></i>
                 Logout
             </button>
+        </div>
+        <div data-bind="if: !loggedIn()">
+            <a
+                class="btn btn-link"
+                style="padding-left: 0; color: white;"
+                type="button"
+                data-bind="page-href: '/login'"
+            >
+                <i class="fas fa-sign-in-alt"></i>
+                Login
+            </a>
         </div>
     </div>
 </nav>
