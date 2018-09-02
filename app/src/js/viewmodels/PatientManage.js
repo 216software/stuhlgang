@@ -20,6 +20,8 @@ class PatientManage extends BasePage {
     this.events = events;
     this.notifications = notifications;
 
+    this.myNotifications = ko.observableArray([]);
+
     // this will be set by pagerjs
     this.id = ko.observable(null);
     this.patient = ko.observable(null);
@@ -52,6 +54,29 @@ class PatientManage extends BasePage {
 
   afterShow = async () => {
     await this.parent.afterShow();
+
+    // find only notifications for *this* patientNumber
+    this.myNotifications.removeAll();
+
+    this.notifications().forEach((n) => {
+      const data = n.data();
+      console.log(`Data is ${data}`);
+
+      const { patientNumber } = JSON.parse(data);
+      console.log(`PatientNumber is ${patientNumber}`);
+
+      if (Number(patientNumber) === Number(this.id())) {
+        console.log(`Adding notification ${n.id()}`);
+        this.myNotifications.push(n);
+      }
+    });
+
+    /*
+    const forThisPatient = this.notifications().filter(
+      n => Number(n.data().patientNumber) === Number(this.id()),
+    );
+    this.myNotifications(forThisPatient);
+    */
 
     this.reset();
     this.fetchCollection();
