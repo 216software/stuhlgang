@@ -60,23 +60,11 @@ class PatientManage extends BasePage {
 
     this.notifications().forEach((n) => {
       const data = n.data();
-      console.log(`Data is ${data}`);
-
       const { patientNumber } = JSON.parse(data);
-      console.log(`PatientNumber is ${patientNumber}`);
-
       if (Number(patientNumber) === Number(this.id())) {
-        console.log(`Adding notification ${n.id()}`);
         this.myNotifications.push(n);
       }
     });
-
-    /*
-    const forThisPatient = this.notifications().filter(
-      n => Number(n.data().patientNumber) === Number(this.id()),
-    );
-    this.myNotifications(forThisPatient);
-    */
 
     this.reset();
     this.fetchCollection();

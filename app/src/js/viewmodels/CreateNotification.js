@@ -1,5 +1,6 @@
 import ko from 'knockout';
 import BasePage from './BasePage';
+import { createNotification } from '../services/localNotification';
 
 const getIdAndIncrement = () => new Promise((resolve) => {
   // eslint-disable-next-line
@@ -21,26 +22,16 @@ class CreateNotification extends BasePage {
 
   createNotification = async () => {
     const timeParts = this.time().split(':');
-    const hour = timeParts[0];
-    const minute = timeParts[1];
-
+    const hour = Number(timeParts[0]);
+    const minute = Number(timeParts[1]);
     const displayName = this.patient().displayName();
 
-    const nextId = await getIdAndIncrement();
-
-    cordova.plugins.notification.local.schedule({
-      id: nextId,
+    await createNotification({
       title: 'Time to poop!',
       text: `It's time for ${displayName} to poop.`,
-      foreground: true,
-      trigger: {
-        every: { hour: Number(hour), minute: Number(minute) },
-      },
-      data: {
-        patientNumber: Number(this.id()),
-        hour,
-        minute,
-      },
+      hour,
+      minute,
+      patientNumber: Number(this.id()),
     });
 
     this.store.info('Notification Scheduled!');

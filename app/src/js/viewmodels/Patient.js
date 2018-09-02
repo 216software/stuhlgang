@@ -8,8 +8,8 @@ import PatientEvent from './PatientEvent';
 import PatientNewEvent from './PatientNewEvent';
 import store from '../services/store';
 import { fetchPatientCollection } from '../services/api/patient';
+import { getNotifications } from '../services/localNotification';
 import PatientModel from '../models/patient';
-import NotificationModel from '../models/notification';
 
 const getModelsFromResults = patients => patients.map(data => new PatientModel(data));
 
@@ -76,17 +76,11 @@ class Patient {
     return promise;
   };
 
-  getNotifications = () => new Promise((resolve) => {
-    this.notifications.removeAll();
-    cordova.plugins.notification.local.getScheduled((nots) => {
-      nots.forEach(nt => this.notifications.push(new NotificationModel(nt)));
-      resolve(this.notifications);
-    });
-  });
-
   // eslint-disable-next-line
   afterShow = async () => {
-    await this.getNotifications();
+    const notifications = await getNotifications();
+    this.notifications(notifications);
+
     return this.fetchCollection();
   };
 }
