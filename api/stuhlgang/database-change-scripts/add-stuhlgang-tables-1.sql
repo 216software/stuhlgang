@@ -10,7 +10,7 @@ create table patients
     -- because I don't care enough about making a stupid "patient zero"
     -- joke to do all that work.
     patient_number serial primary key,
-    display_name citext,
+    display_name citext not null,
     extra_notes text,
     extra_data json,
     inserted timestamptz not null default now(),
@@ -28,7 +28,8 @@ create table provider_patient_links (
     provider uuid not null references people (person_uuid)
     on delete cascade,
 
-    patient_number integer not null references patients (patient_number),
+    patient_number integer not null references patients (patient_number)
+    on delete cascade,
 
     primary key (provider, patient_number),
 
@@ -51,7 +52,8 @@ create table patient_caretakers (
     caretaker uuid not null references people (person_uuid)
     on delete cascade,
 
-    patient_number integer not null references patients (patient_number),
+    patient_number integer not null references patients (patient_number)
+    on delete cascade,
 
     primary key (caretaker, patient_number),
 
