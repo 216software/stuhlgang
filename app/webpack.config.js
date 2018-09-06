@@ -92,6 +92,8 @@ module.exports = (env) => {
       new webpack.ProvidePlugin({
         $: 'jquery',
         jQuery: 'jquery',
+        'window.jQuery': 'jquery',
+        Popper: ['popper.js', 'default'],
         ko: 'knockout',
       }),
 
@@ -102,8 +104,8 @@ module.exports = (env) => {
       ]),
 
       new MiniCssExtractPlugin({
-        filename: '[name].[hash].css',
-        chunkFilename: '[id].[hash].css',
+        filename: 'css/[name].[hash].css',
+        chunkFilename: 'css/[id].[hash].css',
       }),
 
       // copy all the template files so that the app can access them.

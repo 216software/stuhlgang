@@ -1,3 +1,5 @@
+import $ from 'jquery';
+import 'bootstrap';
 import Login from './viewmodels/Login';
 import GetCode from './viewmodels/GetCode';
 import Patient from './viewmodels/Patient';
@@ -23,6 +25,11 @@ class App {
 
   // eslint-disable-next-line
   initialize () {
+    // Bloody hack to make navbar close after links clicked.
+    $(document).on('click', '.sg-nav-link', (event) => {
+      $('#navbarSupportedContent').collapse('hide');
+    });
+
     this.verifySession();
   }
 

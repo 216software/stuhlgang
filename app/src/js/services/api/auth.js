@@ -34,7 +34,7 @@ const signup = ({
   tos,
 }) => request('signup', {
   method: 'POST',
-  data: JSON.stringify({
+  body: JSON.stringify({
     display_name: displayName,
     email_address: email,
     agreed_with_TOS: tos,

@@ -24,7 +24,7 @@
                     data-bind="css: { active: pager.getActivePage().getCurrentId() === id}"
                 >
                     <a
-                        class="nav-link"
+                        class="nav-link sg-nav-link"
                         data-bind="
                             page-href: url,
                             text: title"
@@ -34,7 +34,7 @@
         </div>
         <div data-bind="if: loggedIn">
             <button
-                class="btn btn-link"
+                class="btn btn-link sg-nav-link"
                 style="padding-left: 0; color: white;"
                 type="button"
                 data-bind="click: logout"
@@ -45,7 +45,7 @@
         </div>
         <div data-bind="if: !loggedIn()">
             <a
-                class="btn btn-link"
+                class="btn btn-link sg-nav-link"
                 style="padding-left: 0; color: white;"
                 type="button"
                 data-bind="page-href: '/login'"
