@@ -2,4 +2,4 @@
 
 /usr/bin/curl --silent --user matt@216software.com:@d0b3Sucks \
 https://build.phonegap.com/api/v1/apps/3260494 \
-| jq '{gitcommit:.head, is_complete: .completed}'
+| /usr/bin/jq '{gitcommit:.head, is_complete: .completed}'
