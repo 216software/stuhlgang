@@ -1,3 +1,4 @@
+import moment from 'moment';
 import Notification from '../models/notification';
 
 const getIdAndIncrement = () => new Promise((resolve) => {
@@ -22,12 +23,18 @@ const createNotification = ({
   patientNumber,
 }) => new Promise(async (resolve) => {
   const nextId = await getIdAndIncrement();
+
+  const dt = moment();
+  dt.set('hours', hour);
+  dt.set('minutes', minute);
+  dt.set('secods', 0);
+
   cordova.plugins.notification.local.schedule({
     id: nextId,
     title,
     text,
-    foreground: true,
-    trigger: { every: { hour, minute } },
+    every: 'day',
+    firstAt: dt.toDate(),
     data: { patientNumber, hour, minute },
   }, () => resolve(true));
 });

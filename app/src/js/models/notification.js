@@ -4,16 +4,16 @@ import moment from 'moment';
 class Notification {
   constructor ({
     id,
-    trigger: { every: { minute, hour } },
+    firstAt,
     data,
   }) {
     this.id = ko.observable(id);
-    this.hour = ko.observable(hour);
-    this.minute = ko.observable(minute);
+    this.firstAt = ko.observable(firstAt);
     this.data = ko.observable(data);
 
     this.prettyTime = ko.computed(() => {
-      const dateString = `2000-01-01 ${this.hour()}:${this.minute()}`;
+      const { hour, minute } = JSON.parse(this.data());
+      const dateString = `2000-01-01 ${hour}:${minute}`;
       const m = moment(dateString, 'YYYY-MM-DD HH:mm');
       return m.format('hh:mm a');
     });
