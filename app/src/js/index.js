@@ -3,6 +3,7 @@ import 'pagerjs';
 import ko from 'knockout';
 import App from './App';
 import '../sass/main.scss';
+import './components';
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

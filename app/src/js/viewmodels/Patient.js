@@ -58,13 +58,17 @@ class Patient {
   }
 
   fetchCollection = async () => {
+    console.log('fetching collection');
     const response = await fetchPatientCollection();
+    console.log('fetched');
 
     const promise = new Promise((resolve, reject) => {
       if (response.success) {
         this.patients.removeAll();
         const patients = getModelsFromResults(response.patients);
         patients.forEach(patient => this.patients.push(patient));
+        console.log('patients are');
+        console.log(patients);
         resolve(this.patients);
       } else {
         store.error(response.message);
@@ -81,6 +85,7 @@ class Patient {
     const notifications = await getNotifications();
     this.notifications(notifications);
 
+    console.log('about to fetching collection');
     return this.fetchCollection();
   };
 }

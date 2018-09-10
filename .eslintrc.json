@@ -1,0 +1,15 @@
+{
+    "parser": "babel-eslint",
+    "extends": "airbnb-base",
+    "rules": {
+        "function-paren-newline": ["error", "consistent"],
+        "space-before-function-paren": ["error", "always"]
+    },
+    "globals": {
+        "fetch": true,
+        "document": true,
+        "cordova": true,
+        "pager": true,
+        "NativeStorage": true
+    }
+}

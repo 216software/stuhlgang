@@ -26,6 +26,8 @@ class CreateNotification extends BasePage {
     const minute = Number(timeParts[1]);
     const displayName = this.patient().displayName();
 
+    console.log('About to create notification');
+
     await createNotification({
       title: 'Time to poop!',
       text: `It's time for ${displayName} to poop.`,
@@ -33,6 +35,8 @@ class CreateNotification extends BasePage {
       minute,
       patientNumber: Number(this.id()),
     });
+
+    console.log('Notification created');
 
     this.store.info('Notification Scheduled!');
     setTimeout(() => this.store.info(null), 3000);

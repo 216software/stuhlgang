@@ -4,11 +4,9 @@ import moment from 'moment';
 class Notification {
   constructor ({
     id,
-    firstAt,
     data,
   }) {
     this.id = ko.observable(id);
-    this.firstAt = ko.observable(firstAt);
     this.data = ko.observable(data);
 
     this.prettyTime = ko.computed(() => {

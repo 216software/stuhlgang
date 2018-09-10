@@ -1,22 +1,18 @@
 import $ from 'jquery';
-import 'bootstrap';
 import Login from './viewmodels/Login';
 import GetCode from './viewmodels/GetCode';
-import Patient from './viewmodels/Patient';
 import SignUp from './viewmodels/SignUp';
+import Patient from './viewmodels/Patient';
 import store from './services/store';
 import { verify } from './services/api/auth';
 import { getItem } from './services/nativeStorage';
-import './components';
-
-global.store = store;
 
 class App {
   constructor () {
     this.loginViewModel = new Login();
     this.getCodeViewModel = new GetCode();
-    this.patientViewModel = new Patient();
     this.signUpViewModel = new SignUp();
+    this.patientViewModel = new Patient();
 
     this.session = store.session;
     this.error = store.error;
@@ -26,7 +22,7 @@ class App {
   // eslint-disable-next-line
   initialize () {
     // Bloody hack to make navbar close after links clicked.
-    $(document).on('click', '.sg-nav-link', (event) => {
+    $(document).on('click', '.sg-nav-link', () => {
       $('#navbarSupportedContent').collapse('hide');
     });
 
