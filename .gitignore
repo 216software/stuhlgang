@@ -6,3 +6,5 @@
 /api/stuhlgang/yamlfiles/xps.yaml
 /api/stuhlgang/yamlfiles/stuhlgang-dev.yaml
 .*.swp
+/web/node_modules
+/web/dist
