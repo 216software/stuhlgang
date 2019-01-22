@@ -28,7 +28,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
-      ko: 'knockout',
+      ko: 'knockout'
     })
   ],
 
